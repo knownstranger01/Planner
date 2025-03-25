@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>रिपोर्टहरू - व्यवसाय रेकर्ड किपिंग सिस्टम</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    
+    <!-- Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <!-- Chart Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 id="sidebarCompanyName">कम्पनी नाम</h2>
+                <div class="company-subtitle">व्यवसाय रेकर्ड किपिंग सिस्टम</div>
+            </div>
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="sidebar-menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>ड्यासबोर्ड</span>
+                </a>
+                <a href="customers.html" class="sidebar-menu-item">
+                    <i class="fas fa-users"></i>
+                    <span>ग्राहकहरू</span>
+                </a>
+                <a href="vendors.html" class="sidebar-menu-item">
+                    <i class="fas fa-truck"></i>
+                    <span>विक्रेताहरू</span>
+                </a>
+                <a href="transactions.html" class="sidebar-menu-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>कारोबारहरू</span>
+                </a>
+                <a href="journal.html" class="sidebar-menu-item">
+                    <i class="fas fa-book"></i>
+                    <span>जर्नल इन्ट्रीहरू</span>
+                </a>
+                <a href="invoices.html" class="sidebar-menu-item">
+                    <i class="fas fa-file-invoice"></i>
+                    <span>बिलहरू र भुक्तानीहरू</span>
+                </a>
+                <a href="inventory.html" class="sidebar-menu-item">
+                    <i class="fas fa-boxes"></i>
+                    <span>इन्भेन्टरी व्यवस्थापन</span>
+                </a>
+                <a href="reports.html" class="sidebar-menu-item active">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>रिपोर्टहरू</span>
+                </a>
+                <a href="settings.html" class="sidebar-menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>सेटिङहरू</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <h1>रिपोर्टहरू</h1>
+                <div class="user-actions d-flex align-items-center">
+                    <!-- Company Switcher Dropdown -->
+                    <div class="dropdown me-3">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="companyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-building me-1"></i>
+                            <span id="currentCompanyName">कम्पनी नाम</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" id="companyDropdownMenu" aria-labelledby="companyDropdown">
+                            <!-- कम्पनीहरू यहाँ लोड हुनेछन् -->
+                            <li><a class="dropdown-item" href="create-company.html"><i class="fas fa-plus me-2"></i> नयाँ कम्पनी थप्नुहोस्</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- User Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-1"></i>
+                            <span id="currentUsername">प्रयोगकर्ता</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="settings.html#profile"><i class="fas fa-user-cog me-2"></i> प्रोफाइल</a></li>
+                            <li><a class="dropdown-item" href="settings.html#security"><i class="fas fa-shield-alt me-2"></i> सुरक्षा</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i> लगआउट</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- रिपोर्ट कन्ट्रोल्स सेक्सन -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>रिपोर्ट विकल्पहरू</div>
+                    <button id="generateReportBtn" class="btn btn-primary">
+                        <i class="fas fa-file-alt me-2"></i> रिपोर्ट जेनरेट गर्नुहोस्
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="reportType" class="form-label">रिपोर्ट प्रकार</label>
+                                <select id="reportType" class="form-select">
+                                    <option value="profit-loss">नाफा-नोक्सान विवरण</option>
+                                    <option value="balance-sheet">ब्यालेन्स सिट</option>
+                                    <option value="sales">बिक्री प्रतिवेदन</option>
+                                    <option value="purchases">खरिद प्रतिवेदन</option>
+                                    <option value="inventory">इन्भेन्टरी प्रतिवेदन</option>
+                                    <option value="tax">कर प्रतिवेदन</option>
+                                    <option value="customer">ग्राहक बाँकी प्रतिवेदन</option>
+                                    <option value="vendor">विक्रेता बाँकी प्रतिवेदन</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="reportPeriod" class="form-label">अवधि</label>
+                                <select id="reportPeriod" class="form-select">
+                                    <option value="this-month">यस महिना</option>
+                                    <option value="last-month">गत महिना</option>
+                                    <option value="this-quarter">यस त्रैमासिक</option>
+                                    <option value="last-quarter">गत त्रैमासिक</option>
+                                    <option value="this-year">यस वर्ष</option>
+                                    <option value="last-year">गत वर्ष</option>
+                                    <option value="custom">आफ्नै अवधि छान्नुहोस्</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4" id="customDateRange">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="startDate" class="form-label">सुरु मिति</label>
+                                        <input type="date" id="startDate" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="endDate" class="form-label">अन्त्य मिति</label>
+                                        <input type="date" id="endDate" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- रिपोर्ट प्रदर्शन सेक्सन -->
+            <div id="reportContainer" class="d-none">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 id="reportTitle" class="mb-0">रिपोर्ट शीर्षक</h5>
+                        <div class="report-actions d-flex gap-2">
+                            <button id="printReportBtn" class="btn btn-sm btn-outline-dark">
+                                <i class="fas fa-print me-1"></i> प्रिन्ट
+                            </button>
+                            <button id="exportPdfBtn" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-file-pdf me-1"></i> PDF
+                            </button>
+                            <button id="exportExcelBtn" class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-file-excel me-1"></i> Excel
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p id="reportDateRange" class="text-muted mb-3">मिति अवधि: &mdash;</p>
+                        
+                        <div id="reportSummary" class="alert alert-info mb-4"></div>
+                        
+                        <div class="row mb-4">
+                            <div id="reportChartContainer1" class="col-md-6 mb-4 mb-md-0">
+                                <canvas id="reportChart1"></canvas>
+                            </div>
+                            <div id="reportChartContainer2" class="col-md-6">
+                                <canvas id="reportChart2"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table id="reportTable" class="table table-striped table-bordered table-hover">
+                                <!-- रिपोर्ट डाटा यहाँ थपिनेछ -->
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- मोबाइल साइडबार टगल बटन -->
+    <button id="mobileToggle" class="mobile-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/database.js"></script>
+    <script src="../js/reports.js"></script>
+    <script>
+        // जब पेज लोड हुन्छ
+        document.addEventListener('DOMContentLoaded', function() {
+            // रिपोर्ट जेनरेट गर्ने बटन क्लिक गर्दा
+            document.getElementById('generateReportBtn').addEventListener('click', function() {
+                generateReport();
+            });
+
+            // प्रिन्ट बटन क्लिक गर्दा
+            document.getElementById('printReportBtn').addEventListener('click', function() {
+                window.print();
+            });
+
+            // PDF मा एक्सपोर्ट गर्ने बटन क्लिक गर्दा
+            document.getElementById('exportPdfBtn').addEventListener('click', function() {
+                exportToPDF();
+            });
+
+            // Excel मा एक्सपोर्ट गर्ने बटन क्लिक गर्दा
+            document.getElementById('exportExcelBtn').addEventListener('click', function() {
+                exportToExcel();
+            });
+
+            // थप जाभास्क्रिप्ट कोड यहाँ थप गर्नुहोस्...
+        });
+
+        // PDF मा एक्सपोर्ट गर्ने फंक्शन
+        function exportToPDF() {
+            // लोडिङ मेसेज प्रदर्शन
+            showLoading('PDF तयार हुँदैछ...');
+
+            // रिपोर्ट कन्टेनर प्राप्त गर्ने
+            const reportContainer = document.getElementById('reportContainer');
+            
+            // html2pdf अप्सनहरू
+            const opt = {
+                margin: 10,
+                filename: 'report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // PDF एक्सपोर्ट गर्ने
+            html2pdf().from(reportContainer).set(opt).save().then(() => {
+                // लोडिङ हटाउने
+                hideLoading();
+            }).catch(err => {
+                console.error('PDF export error:', err);
+                hideLoading();
+                alert('PDF बनाउँदा समस्या आयो। पुन: प्रयास गर्नुहोस्।');
+            });
+        }
+
+        // Excel मा एक्सपोर्ट गर्ने फंक्शन
+        function exportToExcel() {
+            // लोडिङ मेसेज प्रदर्शन
+            showLoading('Excel तयार हुँदैछ...');
+
+            // तालिका प्राप्त गर्ने
+            const table = document.getElementById('reportTable');
+            if (!table) {
+                hideLoading();
+                alert('एक्सपोर्ट गर्न तालिका फेला परेन।');
+                return;
+            }
+
+            // रिपोर्ट शीर्षक र मिति अवधि
+            const reportTitle = document.getElementById('reportTitle').innerText;
+            const dateRange = document.getElementById('reportDateRange').innerText;
+
+            try {
+                // नयाँ वर्कबुक बनाउने
+                const wb = XLSX.utils.book_new();
+                
+                // HTML तालिकाबाट वर्कशीट बनाउने
+                const ws = XLSX.utils.table_to_sheet(table);
+                
+                // वर्कशीट अप्सनहरू सेट गर्ने
+                ws['!cols'] = Array(table.rows[0].cells.length).fill({ wch: 15 });
+                
+                // वर्कबुकमा वर्कशीट थप्ने
+                XLSX.utils.book_append_sheet(wb, ws, reportTitle);
+                
+                // फाइल डाउनलोड गर्ने
+                XLSX.writeFile(wb, reportTitle + '.xlsx');
+                
+                // लोडिङ हटाउने
+                hideLoading();
+            } catch (err) {
+                console.error('Excel export error:', err);
+                hideLoading();
+                alert('Excel बनाउँदा समस्या आयो। पुन: प्रयास गर्नुहोस्।');
+            }
+        }
+
+        // लोडिङ मेसेज प्रदर्शन गर्ने फंक्शन
+        function showLoading(message) {
+            // लोडिङ डिभ बनाउने
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'loadingMessage';
+            loadingDiv.style.position = 'fixed';
+            loadingDiv.style.top = '0';
+            loadingDiv.style.left = '0';
+            loadingDiv.style.width = '100%';
+            loadingDiv.style.height = '100%';
+            loadingDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            loadingDiv.style.display = 'flex';
+            loadingDiv.style.justifyContent = 'center';
+            loadingDiv.style.alignItems = 'center';
+            loadingDiv.style.zIndex = '9999';
+            
+            // लोडिङ मेसेज कन्टेनर
+            const messageContainer = document.createElement('div');
+            messageContainer.style.backgroundColor = 'white';
+            messageContainer.style.padding = '20px';
+            messageContainer.style.borderRadius = '5px';
+            messageContainer.style.textAlign = 'center';
+            
+            // स्पिनर आइकन
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner-border text-primary';
+            spinner.setAttribute('role', 'status');
+            
+            // लोडिङ टेक्स्ट
+            const loadingText = document.createElement('div');
+            loadingText.textContent = message || 'कृपया पर्खनुहोस्...';
+            loadingText.style.marginTop = '10px';
+            
+            // सबै एलिमेन्टहरू एक-अर्काभित्र थप्ने
+            messageContainer.appendChild(spinner);
+            messageContainer.appendChild(loadingText);
+            loadingDiv.appendChild(messageContainer);
+            document.body.appendChild(loadingDiv);
+        }
+
+        // लोडिङ मेसेज हटाउने फंक्शन
+        function hideLoading() {
+            const loadingDiv = document.getElementById('loadingMessage');
+            if (loadingDiv) {
+                document.body.removeChild(loadingDiv);
+            }
+        }
+
+        // रिपोर्ट जेनरेट गर्ने फंक्शन (यो फंक्शन तपाईंको अवस्थाअनुसार परिमार्जन गर्न सक्नुहुन्छ)
+        function generateReport() {
+            // रिपोर्ट प्रकार र अवधि प्राप्त गर्ने
+            const reportType = document.getElementById('reportType').value;
+            const reportPeriod = document.getElementById('reportPeriod').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            // यहाँ तपाईंको रिपोर्ट जेनरेट गर्ने तर्क थप्न सक्नुहुन्छ...
+            
+            // उदाहरणका लागि, रिपोर्ट कन्टेनर देखाउने
+            document.getElementById('reportContainer').classList.remove('d-none');
+            
+            // रिपोर्ट शीर्षक सेट गर्ने
+            let reportTitle = '';
+            switch(reportType) {
+                case 'profit-loss': reportTitle = 'नाफा-नोक्सान विवरण'; break;
+                case 'balance-sheet': reportTitle = 'ब्यालेन्स सिट'; break;
+                case 'sales': reportTitle = 'बिक्री प्रतिवेदन'; break;
+                case 'purchases': reportTitle = 'खरिद प्रतिवेदन'; break;
+                case 'inventory': reportTitle = 'इन्भेन्टरी प्रतिवेदन'; break;
+                case 'tax': reportTitle = 'कर प्रतिवेदन'; break;
+                case 'customer': reportTitle = 'ग्राहक बाँकी प्रतिवेदन'; break;
+                case 'vendor': reportTitle = 'विक्रेता बाँकी प्रतिवेदन'; break;
+            }
+            document.getElementById('reportTitle').textContent = reportTitle;
+            
+            // रिपोर्ट तालिका उदाहरण डाटा
+            generateSampleReportData(reportType);
+        }
+
+        // उदाहरण रिपोर्ट डाटा तयार गर्ने फंक्शन (परीक्षण प्रयोजनका लागि)
+        function generateSampleReportData(reportType) {
+            const table = document.getElementById('reportTable');
+            
+            // नमूना डाटा बनाउने
+            let headers, data;
+            
+            switch(reportType) {
+                case 'profit-loss':
+                    headers = ['विवरण', 'रकम (रू.)'];
+                    data = [
+                        ['आम्दानी', ''],
+                        ['बिक्री', '125,000.00'],
+                        ['सेवा आम्दानी', '45,000.00'],
+                        ['अन्य आम्दानी', '5,000.00'],
+                        ['कुल आम्दानी', '175,000.00'],
+                        ['', ''],
+                        ['खर्च', ''],
+                        ['सामान खरिद', '85,000.00'],
+                        ['तलब', '30,000.00'],
+                        ['भाडा', '15,000.00'],
+                        ['विद्युत/पानी', '5,000.00'],
+                        ['अन्य खर्च', '10,000.00'],
+                        ['कुल खर्च', '145,000.00'],
+                        ['', ''],
+                        ['कर अघिको नाफा', '30,000.00'],
+                        ['कर (13%)', '3,900.00'],
+                        ['खुद नाफा', '26,100.00']
+                    ];
+                    break;
+                    
+                case 'sales':
+                    headers = ['मिति', 'बिल नं.', 'ग्राहक', 'रकम (रू.)', 'कर (रू.)', 'कुल रकम (रू.)'];
+                    data = [
+                        ['2023-01-05', 'INV-001', 'राम शर्मा', '5,000.00', '650.00', '5,650.00'],
+                        ['2023-01-12', 'INV-002', 'सीता थापा', '8,500.00', '1,105.00', '9,605.00'],
+                        ['2023-01-18', 'INV-003', 'हरि पौडेल', '12,000.00', '1,560.00', '13,560.00'],
+                        ['2023-01-25', 'INV-004', 'अनिल श्रेष्ठ', '7,500.00', '975.00', '8,475.00'],
+                        ['2023-02-02', 'INV-005', 'सुमन खड्का', '9,200.00', '1,196.00', '10,396.00'],
+                        ['2023-02-10', 'INV-006', 'मनिषा बस्नेत', '6,800.00', '884.00', '7,684.00'],
+                        ['2023-02-15', 'INV-007', 'बिमल तामाङ', '11,500.00', '1,495.00', '12,995.00'],
+                        ['2023-02-22', 'INV-008', 'रेखा अधिकारी', '4,500.00', '585.00', '5,085.00'],
+                    ];
+                    break;
+                    
+                default:
+                    headers = ['विवरण', 'मूल्य'];
+                    data = [['नमूना डाटा', '0.00']];
+            }
+            
+            // तालिका तयार गर्ने
+            let tableHTML = '<thead><tr>';
+            headers.forEach(header => {
+                tableHTML += `<th>${header}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+            
+            data.forEach(row => {
+                tableHTML += '<tr>';
+                row.forEach(cell => {
+                    tableHTML += `<td>${cell}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+            
+            tableHTML += '</tbody>';
+            table.innerHTML = tableHTML;
+            
+            // चार्ट तयार गर्ने
+            if (reportType === 'profit-loss') {
+                renderChart1([
+                    ['आम्दानी', 175000],
+                    ['खर्च', 145000],
+                    ['नाफा', 30000]
+                ]);
+                
+                renderChart2([
+                    ['बिक्री', 125000],
+                    ['सेवा आम्दानी', 45000],
+                    ['अन्य आम्दानी', 5000]
+                ]);
+            } else if (reportType === 'sales') {
+                renderChart1([
+                    ['जनवरी', 35000],
+                    ['फेब्रुअरी', 32000],
+                    ['मार्च', 28000],
+                    ['अप्रिल', 22000],
+                    ['मे', 30000],
+                    ['जुन', 40000],
+                ]);
+            }
+        }
+        
+        // चार्ट 1 रेन्डर गर्ने फंक्शन
+        function renderChart1(data) {
+            const ctx = document.getElementById('reportChart1').getContext('2d');
+            
+            // पुरानो चार्ट हटाउने
+            if (window.chart1) {
+                window.chart1.destroy();
+            }
+            
+            const labels = data.map(item => item[0]);
+            const values = data.map(item => item[1]);
+            
+            // नयाँ चार्ट रेन्डर गर्ने
+            window.chart1 = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'रकम (रू.)',
+                        data: values,
+                        backgroundColor: [
+                            'rgba(78, 115, 223, 0.7)',
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(78, 115, 223, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: 'white'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'समग्र विश्लेषण',
+                            color: 'white'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // चार्ट 2 रेन्डर गर्ने फंक्शन
+        function renderChart2(data) {
+            const ctx = document.getElementById('reportChart2').getContext('2d');
+            
+            // पुरानो चार्ट हटाउने
+            if (window.chart2) {
+                window.chart2.destroy();
+            }
+            
+            const labels = data.map(item => item[0]);
+            const values = data.map(item => item[1]);
+            
+            // नयाँ चार्ट रेन्डर गर्ने
+            window.chart2 = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            'rgba(78, 115, 223, 0.7)',
+                            'rgba(28, 200, 138, 0.7)',
+                            'rgba(54, 185, 204, 0.7)',
+                            'rgba(246, 194, 62, 0.7)',
+                            'rgba(231, 74, 59, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(78, 115, 223, 1)',
+                            'rgba(28, 200, 138, 1)',
+                            'rgba(54, 185, 204, 1)',
+                            'rgba(246, 194, 62, 1)',
+                            'rgba(231, 74, 59, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: 'white'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'विस्तृत विश्लेषण',
+                            color: 'white'
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>कम्पनी सिर्जना - व्यवसाय रेकर्ड किपिंग सिस्टम</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>कम्पनी व्यवस्थापन</h1>
+                <p>नयाँ कम्पनी सिर्जना गर्नुहोस् वा विद्यमान कम्पनी चयन गर्नुहोस्</p>
+            </div>
+            <div id="companyAlert" class="alert alert-danger hidden"></div>
+            
+            <!-- Company List Section -->
+            <div id="companyListSection">
+                <h2>विद्यमान कम्पनीहरू</h2>
+                <div id="companyList" class="company-list">
+                    <!-- Companies will be populated here -->
+                </div>
+                <div class="text-center mt-4">
+                    <button id="createNewCompanyBtn" class="btn btn-primary">नयाँ कम्पनी सिर्जना गर्नुहोस्</button>
+                </div>
+            </div>
+            
+            <!-- Create Company Form -->
+            <div id="createCompanySection" class="hidden">
+                <h2>नयाँ कम्पनी सिर्जना</h2>
+                <form id="createCompanyForm">
+                    <div class="form-group">
+                        <label for="companyName">कम्पनी नाम</label>
+                        <input type="text" id="companyName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="industryType">उद्योग प्रकार</label>
+                        <select id="industryType" class="form-control">
+                            <option value="retail">खुद्रा व्यापार</option>
+                            <option value="wholesale">थोक व्यापार</option>
+                            <option value="manufacturing">उत्पादन</option>
+                            <option value="service">सेवा</option>
+                            <option value="construction">निर्माण</option>
+                            <option value="technology">प्रविधि</option>
+                            <option value="other">अन्य</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="currency">मुद्रा</label>
+                        <select id="currency" class="form-control">
+                            <option value="NPR">नेपाली रुपैयाँ (NPR)</option>
+                            <option value="INR">भारतीय रुपैयाँ (INR)</option>
+                            <option value="USD">अमेरिकी डलर (USD)</option>
+                            <option value="EUR">युरो (EUR)</option>
+                            <option value="GBP">ब्रिटिश पाउण्ड (GBP)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="accountingStartDate">लेखा सुरु मिति</label>
+                        <input type="date" id="accountingStartDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fiscalYearEnd">आर्थिक वर्ष अन्त्य</label>
+                        <select id="fiscalYearEnd" class="form-control">
+                            <option value="0">जनवरी</option>
+                            <option value="1">फेब्रुअरी</option>
+                            <option value="2">मार्च</option>
+                            <option value="3">अप्रिल</option>
+                            <option value="4">मे</option>
+                            <option value="5">जुन</option>
+                            <option value="6">जुलाई</option>
+                            <option value="7">अगस्ट</option>
+                            <option value="8">सेप्टेम्बर</option>
+                            <option value="9">अक्टोबर</option>
+                            <option value="10">नोभेम्बर</option>
+                            <option value="11">डिसेम्बर</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyAddress">कम्पनी ठेगाना</label>
+                        <textarea id="companyAddress" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyPhone">कम्पनी फोन</label>
+                        <input type="tel" id="companyPhone" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="companyEmail">कम्पनी इमेल</label>
+                        <input type="email" id="companyEmail" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="taxNumber">कर नम्बर (PAN/VAT)</label>
+                        <input type="text" id="taxNumber" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">कम्पनी सिर्जना गर्नुहोस्</button>
+                    <button type="button" id="cancelCreateCompany" class="btn btn-block mt-3">रद्द गर्नुहोस्</button>
+                </form>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="../index.html" id="logoutLink">लगआउट</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/company.js"></script>
+</body>
+</html> 

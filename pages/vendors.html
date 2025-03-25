@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>विक्रेताहरू - व्यवसाय रेकर्ड किपिंग सिस्टम</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 id="sidebarCompanyName">कम्पनी नाम</h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="sidebar-menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>ड्यासबोर्ड</span>
+                </a>
+                <a href="customers.html" class="sidebar-menu-item">
+                    <i class="fas fa-users"></i>
+                    <span>ग्राहकहरू</span>
+                </a>
+                <a href="vendors.html" class="sidebar-menu-item active">
+                    <i class="fas fa-truck"></i>
+                    <span>विक्रेताहरू</span>
+                </a>
+                <a href="transactions.html" class="sidebar-menu-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>कारोबारहरू</span>
+                </a>
+                <a href="journal.html" class="sidebar-menu-item">
+                    <i class="fas fa-book"></i>
+                    <span>जर्नल इन्ट्रीहरू</span>
+                </a>
+                <a href="invoices.html" class="sidebar-menu-item">
+                    <i class="fas fa-file-invoice"></i>
+                    <span>बिलहरू र भुक्तानीहरू</span>
+                </a>
+                <a href="inventory.html" class="sidebar-menu-item">
+                    <i class="fas fa-boxes"></i>
+                    <span>इन्भेन्टरी व्यवस्थापन</span>
+                </a>
+                <a href="reports.html" class="sidebar-menu-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>रिपोर्टहरू</span>
+                </a>
+                <a href="settings.html" class="sidebar-menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>सेटिङहरू</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <h1>विक्रेताहरू</h1>
+                <div class="user-actions d-flex align-items-center">
+                    <!-- Company Switcher Dropdown -->
+                    <div class="dropdown me-3">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="companyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-building me-1"></i>
+                            <span id="currentCompanyName">कम्पनी नाम</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" id="companyDropdownMenu" aria-labelledby="companyDropdown">
+                            <!-- कम्पनीहरू यहाँ लोड हुनेछन् -->
+                            <li><a class="dropdown-item" href="create-company.html"><i class="fas fa-plus me-2"></i> नयाँ कम्पनी थप्नुहोस्</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- User Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-1"></i>
+                            <span id="currentUsername">प्रयोगकर्ता</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="settings.html#profile"><i class="fas fa-user-cog me-2"></i> प्रोफाइल</a></li>
+                            <li><a class="dropdown-item" href="settings.html#security"><i class="fas fa-shield-alt me-2"></i> सुरक्षा</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i> लगआउट</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>विक्रेताहरू</div>
+                    <div class="d-flex">
+                        <div class="me-2">
+                            <input type="text" id="searchVendor" class="form-control" placeholder="विक्रेता खोज्नुहोस्...">
+                        </div>
+                        <button id="addVendorBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> नयाँ विक्रेता थप्नुहोस्
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>नाम</th>
+                                    <th>फोन</th>
+                                    <th>इमेल</th>
+                                    <th>ठेगाना</th>
+                                    <th>बाँकी रकम</th>
+                                    <th>कार्यहरू</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vendorTableBody">
+                                <!-- विक्रेताहरू यहाँ लोड हुनेछन् -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Vendor -->
+    <div class="modal fade" id="addVendorModal" tabindex="-1" aria-labelledby="addVendorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addVendorModalLabel">नयाँ विक्रेता थप्नुहोस्</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addVendorForm">
+                        <div class="mb-3">
+                            <label for="vendorName" class="form-label">विक्रेता नाम *</label>
+                            <input type="text" class="form-control" id="vendorName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="vendorEmail" class="form-label">इमेल</label>
+                            <input type="email" class="form-control" id="vendorEmail">
+                        </div>
+                        <div class="mb-3">
+                            <label for="vendorPhone" class="form-label">फोन</label>
+                            <input type="text" class="form-control" id="vendorPhone">
+                        </div>
+                        <div class="mb-3">
+                            <label for="vendorAddress" class="form-label">ठेगाना</label>
+                            <input type="text" class="form-control" id="vendorAddress">
+                        </div>
+                        <div class="mb-3">
+                            <label for="vendorPAN" class="form-label">PAN/VAT नम्बर</label>
+                            <input type="text" class="form-control" id="vendorPAN">
+                        </div>
+                        <div class="mb-3">
+                            <label for="vendorNotes" class="form-label">नोट</label>
+                            <textarea class="form-control" id="vendorNotes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">रद्द गर्नुहोस्</button>
+                    <button type="button" class="btn btn-primary" id="saveVendorBtn">सेभ गर्नुहोस्</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Editing Vendor -->
+    <div class="modal fade" id="editVendorModal" tabindex="-1" aria-labelledby="editVendorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editVendorModalLabel">विक्रेता सम्पादन गर्नुहोस्</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editVendorForm">
+                        <input type="hidden" id="editVendorId">
+                        <div class="mb-3">
+                            <label for="editVendorName" class="form-label">विक्रेता नाम *</label>
+                            <input type="text" class="form-control" id="editVendorName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editVendorEmail" class="form-label">इमेल</label>
+                            <input type="email" class="form-control" id="editVendorEmail">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editVendorPhone" class="form-label">फोन</label>
+                            <input type="text" class="form-control" id="editVendorPhone">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editVendorAddress" class="form-label">ठेगाना</label>
+                            <input type="text" class="form-control" id="editVendorAddress">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editVendorPAN" class="form-label">PAN/VAT नम्बर</label>
+                            <input type="text" class="form-control" id="editVendorPAN">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editVendorNotes" class="form-label">नोट</label>
+                            <textarea class="form-control" id="editVendorNotes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">रद्द गर्नुहोस्</button>
+                    <button type="button" class="btn btn-primary" id="updateVendorBtn">अपडेट गर्नुहोस्</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import/Export Modal -->
+    <div id="importExportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">आयात/निर्यात विक्रेताहरू</h2>
+                <button class="close" id="closeImportExportModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="importExportAlert" class="alert alert-danger hidden"></div>
+                <div class="form-group">
+                    <label for="importFile">CSV फाइल आयात गर्नुहोस्</label>
+                    <input type="file" id="importFile" class="form-control" accept=".csv">
+                </div>
+                <div class="form-group">
+                    <p><strong>CSV को लागि फर्म्याट:</strong> नाम, सम्पर्क व्यक्ति, फोन, इमेल, ठेगाना, नोटहरू</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="importBtn" class="btn btn-primary">आयात गर्नुहोस्</button>
+                <button id="exportBtn" class="btn">निर्यात गर्नुहोस् (CSV)</button>
+                <button id="cancelImportExportBtn" class="btn">रद्द गर्नुहोस्</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/database.js"></script>
+    <script src="../js/vendors.js"></script>
+</body>
+</html> 

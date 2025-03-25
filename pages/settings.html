@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>सेटिङ्स - व्यवसाय रेकर्ड किपिंग सिस्टम</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- साइडबार -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 id="sidebarCompanyName">कम्पनी नाम</h2>
+                <div class="company-subtitle">व्यवसाय रेकर्ड किपिंग सिस्टम</div>
+            </div>
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="sidebar-menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>ड्यासबोर्ड</span>
+                </a>
+                <a href="customers.html" class="sidebar-menu-item">
+                    <i class="fas fa-users"></i>
+                    <span>ग्राहकहरू</span>
+                </a>
+                <a href="vendors.html" class="sidebar-menu-item">
+                    <i class="fas fa-truck"></i>
+                    <span>विक्रेताहरू</span>
+                </a>
+                <a href="transactions.html" class="sidebar-menu-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>कारोबारहरू</span>
+                </a>
+                <a href="journal.html" class="sidebar-menu-item">
+                    <i class="fas fa-book"></i>
+                    <span>जर्नल इन्ट्रीहरू</span>
+                </a>
+                <a href="invoices.html" class="sidebar-menu-item">
+                    <i class="fas fa-file-invoice"></i>
+                    <span>बिलहरू र भुक्तानीहरू</span>
+                </a>
+                <a href="inventory.html" class="sidebar-menu-item">
+                    <i class="fas fa-boxes"></i>
+                    <span>इन्भेन्टरी व्यवस्थापन</span>
+                </a>
+                <a href="reports.html" class="sidebar-menu-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>रिपोर्टहरू</span>
+                </a>
+                <a href="settings.html" class="sidebar-menu-item active">
+                    <i class="fas fa-cog"></i>
+                    <span>सेटिङहरू</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- मुख्य सामग्री -->
+        <div class="main-content">
+            <div class="top-bar">
+                <h1>सेटिङ्स</h1>
+                <div class="user-actions d-flex align-items-center">
+                    <!-- Company Switcher Dropdown -->
+                    <div class="dropdown me-3">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="companyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-building me-1"></i>
+                            <span id="currentCompanyName">कम्पनी नाम</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" id="companyDropdownMenu" aria-labelledby="companyDropdown">
+                            <!-- कम्पनीहरू यहाँ लोड हुनेछन् -->
+                            <li><a class="dropdown-item" href="create-company.html"><i class="fas fa-plus me-2"></i> नयाँ कम्पनी थप्नुहोस्</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- User Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-1"></i>
+                            <span id="currentUsername">प्रयोगकर्ता</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="settings.html#profile"><i class="fas fa-user-cog me-2"></i> प्रोफाइल</a></li>
+                            <li><a class="dropdown-item" href="settings.html#security"><i class="fas fa-shield-alt me-2"></i> सुरक्षा</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i> लगआउट</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- सेटिङ्स ट्याबहरू -->
+            <ul class="nav nav-tabs mb-4" id="settingsTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab" aria-controls="general" aria-selected="true">
+                        <i class="fas fa-sliders-h me-2"></i>सामान्य सेटिङ्स
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="company-tab" data-bs-toggle="tab" data-bs-target="#company" type="button" role="tab" aria-controls="company" aria-selected="false">
+                        <i class="fas fa-building me-2"></i>कम्पनी विवरण
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tax-tab" data-bs-toggle="tab" data-bs-target="#tax" type="button" role="tab" aria-controls="tax" aria-selected="false">
+                        <i class="fas fa-percentage me-2"></i>कर व्यवस्थापन
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="bank-tab" data-bs-toggle="tab" data-bs-target="#bank" type="button" role="tab" aria-controls="bank" aria-selected="false">
+                        <i class="fas fa-university me-2"></i>बैंक व्यवस्थापन
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab" aria-controls="security" aria-selected="false">
+                        <i class="fas fa-shield-alt me-2"></i>सुरक्षा
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="user-tab" data-bs-toggle="tab" data-bs-target="#user" type="button" role="tab" aria-controls="user" aria-selected="false">
+                        <i class="fas fa-user-cog me-2"></i>प्रयोगकर्ता प्रोफाइल
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="backup-tab" data-bs-toggle="tab" data-bs-target="#backup" type="button" role="tab" aria-controls="backup" aria-selected="false">
+                        <i class="fas fa-database me-2"></i>ब्याकअप र पुनर्स्थापना
+                    </button>
+                </li>
+            </ul>
+
+            <!-- ट्याब सामग्री -->
+            <div class="tab-content" id="settingsTabContent">
+                <!-- सामान्य सेटिङ्स -->
+                <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">प्रणाली सेटिङ्स</h5>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="dateFormat" class="form-label">मिति ढाँचा</label>
+                                        <select id="dateFormat" class="form-select">
+                                            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                            <option value="DD-MM-YYYY">DD-MM-YYYY</option>
+                                            <option value="MM-DD-YYYY">MM-DD-YYYY</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="language" class="form-label">भाषा</label>
+                                        <select id="language" class="form-select">
+                                            <option value="ne">नेपाली</option>
+                                            <option value="en">English</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="taxRate" class="form-label">पूर्वनिर्धारित कर दर (%)</label>
+                                        <input type="number" id="taxRate" class="form-control" min="0" max="100" step="0.01" value="13">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="currencySymbol" class="form-label">मुद्रा चिन्ह</label>
+                                        <input type="text" id="currencySymbol" class="form-control" value="रू">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="currencySelector" class="form-label">प्राथमिक मुद्रा</label>
+                                <select id="currencySelector" class="form-select">
+                                    <!-- मुद्राहरू जाभास्क्रिप्टबाट थपिनेछन् -->
+                                </select>
+                                <small class="form-text text-muted">मुद्रा परिवर्तन गर्दा स्वचालित रूपमा मुद्रा चिन्ह परिवर्तन हुनेछ।</small>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="darkModeSwitch">
+                                <label class="form-check-label" for="darkModeSwitch">डार्क मोड</label>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="notificationsSwitch" checked>
+                                <label class="form-check-label" for="notificationsSwitch">नोटिफिकेसनहरू सक्षम गर्नुहोस्</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- कम्पनी विवरण -->
+                <div class="tab-pane fade" id="company" role="tabpanel" aria-labelledby="company-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">कम्पनी प्रोफाइल</h5>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="companyName" class="form-label">कम्पनी नाम</label>
+                                        <input type="text" id="companyName" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="companyType" class="form-label">व्यवसाय प्रकार</label>
+                                        <select id="companyType" class="form-select">
+                                            <option value="retail">खुद्रा व्यापार</option>
+                                            <option value="wholesale">थोक व्यापार</option>
+                                            <option value="manufacturing">उत्पादन</option>
+                                            <option value="service">सेवा</option>
+                                            <option value="other">अन्य</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="companyPAN" class="form-label">प्यान/भ्याट नम्बर</label>
+                                        <input type="text" id="companyPAN" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="fiscalYear" class="form-label">आर्थिक वर्ष शुरु</label>
+                                        <input type="date" id="fiscalYear" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="companyPhone" class="form-label">फोन नम्बर</label>
+                                        <input type="text" id="companyPhone" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="companyEmail" class="form-label">इमेल</label>
+                                        <input type="email" id="companyEmail" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="companyAddress" class="form-label">ठेगाना</label>
+                                <textarea id="companyAddress" class="form-control" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="companyLogo" class="form-label">कम्पनी लोगो</label>
+                                <input type="file" id="companyLogo" class="form-control" accept="image/*">
+                                <div id="logoPreview" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h5 class="card-title">कम्पनी व्यवस्थापन</h5>
+                            
+                            <div class="d-grid gap-2">
+                                <button id="createNewCompanyBtn" class="btn btn-primary">
+                                    <i class="fas fa-plus-circle me-2"></i> नयाँ कम्पनी बनाउनुहोस्
+                                </button>
+                                <button id="switchCompanyBtn" class="btn btn-info">
+                                    <i class="fas fa-exchange-alt me-2"></i> कम्पनी परिवर्तन गर्नुहोस्
+                                </button>
+                                <button id="deleteCompanyBtn" class="btn btn-danger">
+                                    <i class="fas fa-trash-alt me-2"></i> यो कम्पनी मेटाउनुहोस्
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- कर व्यवस्थापन -->
+                <div class="tab-pane fade" id="tax" role="tabpanel" aria-labelledby="tax-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">कर व्यवस्थापन</h5>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="taxRate" class="form-label">पूर्वनिर्धारित कर दर (%)</label>
+                                        <input type="number" id="taxRate" class="form-control" min="0" max="100" step="0.01" value="13">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check form-switch mb-3 mt-4">
+                                        <input class="form-check-input" type="checkbox" id="autoTaxSwitch" checked>
+                                        <label class="form-check-label" for="autoTaxSwitch">स्वचालित कर गणना</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h6 class="mt-4">कर नियमहरू</h6>
+                            <p class="text-muted">विभिन्न प्रकारका उत्पादन र सेवाहरूको लागि अलग-अलग कर दरहरू सेट गर्नुहोस्</p>
+                            
+                            <div id="taxRulesContainer">
+                                <!-- Tax rules will be added here by JavaScript -->
+                            </div>
+                            
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-outline-primary" id="addTaxRuleBtn">
+                                    <i class="fas fa-plus-circle me-2"></i> नयाँ कर नियम थप्नुहोस्
+                                </button>
+                            </div>
+                            
+                            <hr>
+                            
+                            <h6 class="mt-4">कर रिपोर्ट सेटिङ्स</h6>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="taxPeriod" class="form-label">पूर्वनिर्धारित कर अवधि</label>
+                                        <select id="taxPeriod" class="form-select">
+                                            <option value="monthly">मासिक</option>
+                                            <option value="quarterly">त्रैमासिक</option>
+                                            <option value="yearly">वार्षिक</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="taxAuthority" class="form-label">कर अधिकारी/निकाय</label>
+                                        <input type="text" id="taxAuthority" class="form-control" placeholder="जस्तै: आन्तरिक राजस्व विभाग">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- बैंक व्यवस्थापन -->
+                <div class="tab-pane fade" id="bank" role="tabpanel" aria-labelledby="bank-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">बैंक खाता व्यवस्थापन</h5>
+                            
+                            <p class="text-muted">तपाईंको व्यवसायको लागि बैंक खाताहरू थप्नुहोस् र व्यवस्थापन गर्नुहोस्</p>
+                            
+                            <div id="bankAccountsContainer">
+                                <!-- Bank accounts will be added here by JavaScript -->
+                            </div>
+                            
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-outline-primary" id="addBankAccountBtn">
+                                    <i class="fas fa-plus-circle me-2"></i> नयाँ बैंक खाता थप्नुहोस्
+                                </button>
+                            </div>
+                            
+                            <hr>
+                            
+                            <h6 class="mt-4">बैंक रिकन्सिलेसन सेटिङ्स</h6>
+                            
+                            <div class="form-group mb-3">
+                                <label for="reconciliationFrequency" class="form-label">रिकन्सिलेसन आवृत्ति</label>
+                                <select id="reconciliationFrequency" class="form-select">
+                                    <option value="weekly">साप्ताहिक</option>
+                                    <option value="monthly" selected>मासिक</option>
+                                    <option value="quarterly">त्रैमासिक</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="autoReconciliationSwitch">
+                                <label class="form-check-label" for="autoReconciliationSwitch">स्वचालित रिकन्सिलेसन सुझावहरू</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- सुरक्षा -->
+                <div class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">सुरक्षा सेटिङ्स</h5>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="enableTwoFactor">
+                                <label class="form-check-label" for="enableTwoFactor">दुई-कारक प्रमाणीकरण सक्षम गर्नुहोस्</label>
+                                <div class="form-text text-muted">लगइन गर्दा थप सुरक्षा स्तर थप्न पासवर्डको अतिरिक्त मोबाइल फोनमा भेरिफिकेसन कोड प्राप्त गर्नुहोस्</div>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="enableAuditTrail" checked>
+                                <label class="form-check-label" for="enableAuditTrail">अडिट ट्रेल सक्षम गर्नुहोस्</label>
+                                <div class="form-text text-muted">सिस्टममा गरिएका सबै परिवर्तनहरूको विस्तृत लग सुरक्षित गर्नुहोस्</div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <h6>प्रयोगकर्ता अनुमतिहरू</h6>
+                            <p class="text-muted">संस्थाका प्रयोगकर्ताहरूको पहुँच स्तर व्यवस्थापन गर्नुहोस्</p>
+                            
+                            <div id="userRolesContainer">
+                                <!-- User roles will be added here by JavaScript -->
+                            </div>
+                            
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-outline-primary" id="addUserBtn">
+                                    <i class="fas fa-user-plus me-2"></i> नयाँ प्रयोगकर्ता आमन्त्रित गर्नुहोस्
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h5 class="card-title">अडिट लग</h5>
+                            
+                            <div class="mb-3">
+                                <label for="auditLogFilter" class="form-label">फिल्टर अपरेसन</label>
+                                <select id="auditLogFilter" class="form-select">
+                                    <option value="all">सबै कार्यहरू</option>
+                                    <option value="login">लगिन/लगआउट</option>
+                                    <option value="data">डाटा परिवर्तन</option>
+                                    <option value="settings">सेटिङ्स परिवर्तन</option>
+                                    <option value="users">प्रयोगकर्ता व्यवस्थापन</option>
+                                </select>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-sm table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>मिति/समय</th>
+                                            <th>प्रयोगकर्ता</th>
+                                            <th>कार्य</th>
+                                            <th>विवरण</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="auditLogTable">
+                                        <!-- Audit log entries will be added here by JavaScript -->
+                                        <tr>
+                                            <td colspan="4" class="text-center">अडिट ट्रेल लोड हुँदैछ...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- प्रयोगकर्ता प्रोफाइल -->
+                <div class="tab-pane fade" id="user" role="tabpanel" aria-labelledby="user-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">प्रयोगकर्ता विवरण</h5>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="userName" class="form-label">नाम</label>
+                                        <input type="text" id="userName" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="userEmail" class="form-label">इमेल</label>
+                                        <input type="email" id="userEmail" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="userPhone" class="form-label">फोन नम्बर</label>
+                                <input type="text" id="userPhone" class="form-control">
+                            </div>
+                            
+                            <h6 class="mt-4 mb-3">पासवर्ड परिवर्तन गर्नुहोस्</h6>
+                            
+                            <div class="form-group mb-3">
+                                <label for="currentPassword" class="form-label">वर्तमान पासवर्ड</label>
+                                <input type="password" id="currentPassword" class="form-control">
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="newPassword" class="form-label">नयाँ पासवर्ड</label>
+                                        <input type="password" id="newPassword" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="confirmPassword" class="form-label">पासवर्ड पुष्टि गर्नुहोस्</label>
+                                        <input type="password" id="confirmPassword" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button id="changePasswordBtn" class="btn btn-primary">
+                                <i class="fas fa-key me-2"></i> पासवर्ड परिवर्तन गर्नुहोस्
+                            </button>
+                            
+                            <hr class="my-4">
+                            
+                            <h6 class="text-danger">खतरनाक क्षेत्र</h6>
+                            <p class="text-muted">यो कार्य पूर्णरूपमा अपरिवर्तनीय छ र तपाईंको सबै डाटा मेटिनेछ</p>
+                            
+                            <button id="deleteAccountBtn" class="btn btn-outline-danger">
+                                <i class="fas fa-trash-alt me-2"></i> खाता मेटाउनुहोस्
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ब्याकअप र पुनर्स्थापना -->
+                <div class="tab-pane fade" id="backup" role="tabpanel" aria-labelledby="backup-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">डाटा व्यवस्थापन</h5>
+                            
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i> नियमित रूपमा आफ्नो डाटा ब्याकअप गर्न सिफारिस गरिन्छ।
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-cloud-download-alt fa-3x mb-3 text-primary"></i>
+                                            <h5>डाटा ब्याकअप</h5>
+                                            <p>तपाईंको सम्पूर्ण व्यवसाय डाटाको ब्याकअप डाउनलोड गर्नुहोस्</p>
+                                            <button id="backupBtn" class="btn btn-primary">
+                                                <i class="fas fa-download me-2"></i> ब्याकअप डाउनलोड गर्नुहोस्
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-success"></i>
+                                            <h5>डाटा पुनर्स्थापना</h5>
+                                            <p>पहिले ब्याकअप गरिएको डाटा पुनर्स्थापना गर्नुहोस्</p>
+                                            <div class="input-group mb-3">
+                                                <input type="file" class="form-control" id="restoreFile" accept=".json">
+                                                <button id="restoreBtn" class="btn btn-success">
+                                                    <i class="fas fa-upload me-2"></i> पुनर्स्थापना
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5 class="card-title text-danger">खतरनाक क्षेत्र</h5>
+                                    
+                                    <div class="alert alert-danger">
+                                        <i class="fas fa-exclamation-triangle me-2"></i> सावधान: यी कार्यहरू तपाईंको डाटा स्थायी रूपमा मेटाउन सक्छन्। सावधानीपूर्वक प्रयोग गर्नुहोस्।
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <button id="clearTransactionsBtn" class="btn btn-outline-danger mb-3 w-100">
+                                                <i class="fas fa-eraser me-2"></i> सबै लेनदेनहरू मेटाउनुहोस्
+                                            </button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button id="resetDataBtn" class="btn btn-danger mb-3 w-100">
+                                                <i class="fas fa-trash-alt me-2"></i> सबै डाटा मेटाउनुहोस्
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- मोबाइल साइडबार टगल बटन -->
+    <button id="mobileToggle" class="mobile-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/database.js"></script>
+    <script src="../js/settings.js"></script>
+</body>
+</html> 

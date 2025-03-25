@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>खाता दर्ता - व्यवसाय रेकर्ड किपिंग सिस्टम</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>नयाँ खाता बनाउनुहोस्</h1>
+                <p>आफ्नो विवरण भर्नुहोस्</p>
+            </div>
+            <div id="registerAlert" class="alert alert-danger hidden"></div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="fullName">पूरा नाम</label>
+                    <input type="text" id="fullName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">इमेल</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerUsername">प्रयोगकर्ता नाम</label>
+                    <input type="text" id="registerUsername" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">पासवर्ड</label>
+                    <input type="password" id="registerPassword" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmRegisterPassword">पासवर्ड पुष्टि गर्नुहोस्</label>
+                    <input type="password" id="confirmRegisterPassword" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="role">भूमिका</label>
+                    <select id="role" class="form-control">
+                        <option value="admin">प्रशासक</option>
+                        <option value="accountant">लेखापाल</option>
+                        <option value="salesManager">बिक्री प्रबन्धक</option>
+                        <option value="inventoryManager">भण्डार प्रबन्धक</option>
+                        <option value="user">सामान्य प्रयोगकर्ता</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">दर्ता गर्नुहोस्</button>
+            </form>
+            <div class="text-center mt-4">
+                <p>पहिले नै खाता छ? <a href="../index.html">लगइन गर्नुहोस्</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+</body>
+</html> 
