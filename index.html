@@ -1,81 +1,970 @@
 <!DOCTYPE html>
-<html lang="ne">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>व्यवसाय रेकर्ड किपिंग सिस्टम</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Busy Worker OS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0f1117;--surface:#1a1d27;--card:#21253a;--border:#2e3250;--accent:#6c63ff;--accent3:#43e97b;--accent4:#f7b731;--text:#e2e8f0;--muted:#8892a4;--danger:#ff4757;--font:'Segoe UI',system-ui,sans-serif}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
+header{background:#1a1d27;border-bottom:1px solid var(--border);padding:13px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+header h1{font-size:1.2rem;font-weight:700;color:var(--accent)}
+#date-display{color:var(--muted);font-size:.82rem}
+nav{display:flex;gap:2px;padding:10px 22px 0;flex-wrap:wrap;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:50px;z-index:99}
+.tab-btn{background:transparent;border:none;color:var(--muted);cursor:pointer;padding:7px 11px;border-radius:6px 6px 0 0;font-size:.8rem;transition:.15s;white-space:nowrap}
+.tab-btn:hover{color:var(--text);background:var(--card)}
+.tab-btn.active{color:var(--accent);background:var(--card);border-bottom:2px solid var(--accent);font-weight:600}
+main{padding:20px 22px;max-width:1380px;margin:0 auto}
+.panel{display:none}.panel.active{display:block}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:17px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.card-title{font-size:.9rem;font-weight:600}
+.pill{background:var(--accent);color:#fff;font-size:.68rem;padding:2px 8px;border-radius:20px}
+input[type=text],input[type=date],input[type=number],input[type=month],input[type=time],textarea,select{background:#0d0f1e;border:1px solid var(--border);color:var(--text);border-radius:7px;padding:7px 10px;font-size:.82rem;width:100%;outline:none;font-family:inherit}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:80px}
+.row{display:flex;gap:7px;align-items:center;margin-bottom:8px}
+.btn{cursor:pointer;border:none;border-radius:7px;padding:7px 14px;font-size:.82rem;font-weight:600;transition:.15s;white-space:nowrap}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.85}
+.btn-sm{padding:3px 9px;font-size:.72rem}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{opacity:.85}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.filter-btn.active{border-color:var(--accent);color:var(--accent)}
+.task-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.task-item:last-child{border-bottom:none}
+.task-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
+.task-item.done .task-text{text-decoration:line-through;color:var(--muted)}
+.task-text{flex:1;font-size:.84rem}
+.priority{font-size:.66rem;padding:2px 6px;border-radius:4px;font-weight:700;flex-shrink:0}
+.p-high{background:#ff475722;color:#ff4757}.p-med{background:#f7b73122;color:#f7b731}.p-low{background:#43e97b22;color:#43e97b}
+.habit-row{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid var(--border)}
+.habit-row:last-child{border-bottom:none}
+.habit-name{flex:1;font-size:.84rem}
+.habit-days{display:flex;gap:3px}
+.day-dot{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:.6rem;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.day-dot.done{background:var(--accent3);border-color:var(--accent3);color:#fff}
+.streak{font-size:.72rem;color:var(--accent4);min-width:34px;text-align:right}
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.day-col{background:#0d0f1e;border:1px solid var(--border);border-radius:7px;padding:9px;min-height:120px}
+.day-col h4{font-size:.68rem;text-transform:uppercase;color:var(--muted);margin-bottom:6px;text-align:center}
+.day-col.today{border-color:var(--accent)}.day-col.today h4{color:var(--accent)}
+.day-task{font-size:.72rem;padding:3px 5px;margin-bottom:3px;border-radius:4px;background:var(--card);border-left:3px solid var(--accent);cursor:pointer;word-break:break-word}
+.day-task:hover{opacity:.72}
+.meal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:9px}
+.meal-slot{background:#0d0f1e;border:1px solid var(--border);border-radius:7px;padding:10px}
+.meal-slot h4{font-size:.75rem;color:var(--accent4);margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
+.meal-entry{font-size:.79rem;padding:3px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:4px}
+.meal-entry:last-child{border-bottom:none}
+.grocery-list{list-style:none}
+.grocery-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.grocery-item.checked .g-name{text-decoration:line-through;color:var(--muted)}
+.grocery-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
+.g-name{flex:1;font-size:.84rem}
+.grocery-cat{font-size:.66rem;padding:2px 7px;border-radius:20px;background:var(--border);flex-shrink:0}
+.ex-row{display:grid;grid-template-columns:1fr 68px 68px 76px auto;gap:7px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:.79rem}
+.ex-row:last-child{border-bottom:none}
+.ex-head{color:var(--muted);font-size:.71rem;font-weight:600}
+.notes-grid{display:grid;grid-template-columns:220px 1fr;gap:13px}
+.notes-list{display:flex;flex-direction:column;gap:5px;overflow-y:auto;max-height:540px}
+.note-item{background:#0d0f1e;border:1px solid var(--border);border-radius:7px;padding:9px;cursor:pointer;transition:.15s}
+.note-item:hover,.note-item.active{border-color:var(--accent);background:var(--card)}
+.note-item h5{font-size:.79rem;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note-item p{font-size:.69rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note-editor{display:flex;flex-direction:column;gap:8px}
+.note-editor textarea{min-height:450px;font-size:.87rem;line-height:1.65}
+.budget-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.budget-box{background:#0d0f1e;border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.budget-box .amount{font-size:1.25rem;font-weight:700;margin-top:4px}
+.budget-box .blabel{font-size:.71rem;color:var(--muted)}
+.income-color{color:var(--accent3)}.expense-color{color:var(--danger)}.balance-color{color:var(--accent)}
+.tx-item{display:grid;grid-template-columns:1fr 95px 88px 34px;gap:7px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:.79rem}
+.goal-card{background:#0d0f1e;border:1px solid var(--border);border-radius:9px;padding:13px;margin-bottom:10px}
+.goal-card h4{font-size:.87rem;font-weight:600;margin-bottom:5px}
+.progress-bar{height:7px;background:var(--border);border-radius:4px;overflow:hidden;margin:7px 0}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent3));border-radius:4px;transition:.4s}
+.goal-meta{display:flex;justify-content:space-between;font-size:.71rem;color:var(--muted)}
+.pomo-center{text-align:center;padding:22px 0}
+.pomo-ring{width:165px;height:165px;border-radius:50%;border:5px solid var(--accent);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:2.1rem;font-weight:700}
+.pomo-label{font-size:.82rem;color:var(--muted);margin-bottom:13px}
+.pomo-btns{display:flex;justify-content:center;gap:9px;margin-bottom:16px}
+.pomo-stats{display:flex;justify-content:center;gap:22px}
+.pomo-stat .val{font-size:1.2rem;font-weight:700;color:var(--accent)}.pomo-stat .lbl{font-size:.67rem;color:var(--muted);text-align:center}
+.reminder-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.reminder-item .rtime{font-size:.72rem;color:var(--accent4);min-width:52px;flex-shrink:0}
+.reminder-item .rmsg{flex:1;font-size:.84rem}
+.muted-text{color:var(--muted);font-size:.82rem;padding:10px 0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:900px){.week-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:650px){.week-grid{grid-template-columns:repeat(2,1fr)}.notes-grid{grid-template-columns:1fr}.budget-summary{grid-template-columns:1fr}.home-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <h1>व्यवसाय रेकर्ड किपिंग सिस्टम</h1>
-                <p>आफ्नो खातामा लगइन गर्नुहोस्</p>
-            </div>
-            <div id="loginAlert" class="alert alert-danger hidden"></div>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">प्रयोगकर्ता नाम</label>
-                    <input type="text" id="username" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">पासवर्ड</label>
-                    <input type="password" id="password" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">लगइन गर्नुहोस्</button>
-            </form>
-            <div class="text-center mt-3">
-                <a href="#" id="forgotPasswordLink">पासवर्ड बिर्सनुभयो?</a>
-            </div>
-            <div class="text-center mt-4">
-                <p>खाता छैन? <a href="#" id="registerLink">नयाँ खाता बनाउनुहोस्</a></p>
-            </div>
+<header>
+  <h1>⚡ Busy Worker OS</h1>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <span id="date-display"></span>
+    <button class="btn btn-ghost btn-sm" onclick="exportData()" title="Download all your data as a JSON backup file" style="border-color:#43e97b;color:#43e97b">💾 Export</button>
+    <label class="btn btn-ghost btn-sm" title="Restore data from a previously exported JSON file" style="cursor:pointer;border-color:#f7b731;color:#f7b731">
+      📂 Import<input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)"/>
+    </label>
+    <button class="btn btn-ghost btn-sm" onclick="resetAllData()" title="Wipe all data and start fresh" style="border-color:#ff4757;color:#ff4757">🗑 Reset</button>
+  </div>
+</header>
+<nav id="main-nav">
+  <button class="tab-btn active" data-panel="dashboard">🏠 Dashboard</button>
+  <button class="tab-btn" data-panel="tasks">✅ Tasks</button>
+  <button class="tab-btn" data-panel="planner">📅 Planner</button>
+  <button class="tab-btn" data-panel="habits">🔥 Habits</button>
+  <button class="tab-btn" data-panel="meals">🍽️ Meals</button>
+  <button class="tab-btn" data-panel="grocery">🛒 Grocery</button>
+  <button class="tab-btn" data-panel="workout">💪 Workout</button>
+  <button class="tab-btn" data-panel="notes">📝 Notes</button>
+  <button class="tab-btn" data-panel="budget">💰 Budget</button>
+  <button class="tab-btn" data-panel="goals">🎯 Goals</button>
+  <button class="tab-btn" data-panel="pomodoro">⏱️ Pomodoro</button>
+</nav>
+<main>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="panel active">
+  <div class="home-grid">
+    <div class="card"><div class="card-header"><span class="card-title">✅ Today's Tasks</span><span class="pill" id="dash-task-count">0 left</span></div><div id="dash-tasks"><p class="muted-text">No tasks today</p></div><button class="btn btn-ghost btn-sm" style="margin-top:9px" onclick="switchTab('tasks')">View All →</button></div>
+    <div class="card"><div class="card-header"><span class="card-title">🔥 Habit Streaks</span></div><div id="dash-habits"><p class="muted-text">No habits set up</p></div><button class="btn btn-ghost btn-sm" style="margin-top:9px" onclick="switchTab('habits')">View All →</button></div>
+    <div class="card"><div class="card-header"><span class="card-title">🍽️ Today's Meals</span></div><div id="dash-meals"></div><button class="btn btn-ghost btn-sm" style="margin-top:9px" onclick="switchTab('meals')">Plan Meals →</button></div>
+    <div class="card"><div class="card-header"><span class="card-title">💪 Today's Workout</span></div><div id="dash-workout"><p class="muted-text">No workout planned</p></div><button class="btn btn-ghost btn-sm" style="margin-top:9px" onclick="switchTab('workout')">Log Workout →</button></div>
+    <div class="card"><div class="card-header"><span class="card-title">🎯 Goals Progress</span></div><div id="dash-goals"><p class="muted-text">No goals yet</p></div><button class="btn btn-ghost btn-sm" style="margin-top:9px" onclick="switchTab('goals')">View Goals →</button></div>
+    <div class="card"><div class="card-header"><span class="card-title">💰 Budget Snapshot</span></div><div id="dash-budget"></div><button class="btn btn-ghost btn-sm" style="margin-top:9px" onclick="switchTab('budget')">View Budget →</button></div>
+    <div class="card"><div class="card-header"><span class="card-title">🔔 Reminders</span></div><div id="dash-reminders"><p class="muted-text">No reminders today</p></div><button class="btn btn-ghost btn-sm" style="margin-top:9px" onclick="switchTab('pomodoro')">Start Focus →</button></div>
+    <div class="card"><div class="card-header"><span class="card-title">📝 Quick Note</span></div><textarea id="quick-note" placeholder="Capture a thought…"></textarea><button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="saveQuickNote()">💾 Save to Notes</button></div>
+  </div>
+</div>
+
+<!-- TASKS -->
+<div id="tasks" class="panel">
+  <div class="card" style="max-width:680px">
+    <div class="card-header"><span class="card-title">✅ Daily Task Manager</span><span id="task-stats" style="font-size:.77rem;color:var(--muted)"></span></div>
+    <div class="row" style="flex-wrap:wrap;gap:7px;margin-bottom:8px">
+      <input type="text" id="task-input" placeholder="Add a task…" style="flex:1;min-width:150px" onkeydown="if(event.key==='Enter')addTask()"/>
+      <select id="task-priority" style="width:105px"><option value="high">🔴 High</option><option value="med" selected>🟡 Medium</option><option value="low">🟢 Low</option></select>
+      <select id="task-category" style="width:115px"><option value="Work">💼 Work</option><option value="Personal">🏠 Personal</option><option value="Health">❤️ Health</option><option value="Finance">💰 Finance</option><option value="Other">📌 Other</option></select>
+      <button class="btn btn-primary" onclick="addTask()">Add</button>
+    </div>
+    <div style="display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap">
+      <button class="btn btn-ghost btn-sm filter-btn active" data-filter="all">All</button>
+      <button class="btn btn-ghost btn-sm filter-btn" data-filter="active">Active</button>
+      <button class="btn btn-ghost btn-sm filter-btn" data-filter="done">Done</button>
+      <button class="btn btn-ghost btn-sm filter-btn" data-filter="high">🔴 High</button>
+      <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="clearDoneTasks()">Clear Done</button>
+    </div>
+    <div id="task-list"></div>
+  </div>
+</div>
+
+<!-- WEEKLY PLANNER -->
+<div id="planner" class="panel">
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📅 Weekly Planner</span>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-ghost btn-sm" onclick="weekOffset--;renderWeekPlanner()">← Prev</button>
+        <button class="btn btn-ghost btn-sm" onclick="weekOffset=0;renderWeekPlanner()">Today</button>
+        <button class="btn btn-ghost btn-sm" onclick="weekOffset++;renderWeekPlanner()">Next →</button>
+      </div>
+    </div>
+    <div id="week-range" style="font-size:.77rem;color:var(--muted);margin-bottom:11px"></div>
+    <div class="week-grid" id="week-grid"></div>
+    <div style="margin-top:14px;padding-top:13px;border-top:1px solid var(--border)">
+      <div class="row" style="flex-wrap:wrap;gap:7px">
+        <select id="plan-day" style="width:122px"><option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option><option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option></select>
+        <input type="text" id="plan-task" placeholder="Task or event…" style="flex:1" onkeydown="if(event.key==='Enter')addWeekTask()"/>
+        <button class="btn btn-primary" onclick="addWeekTask()">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HABITS -->
+<div id="habits" class="panel">
+  <div class="card" style="max-width:660px">
+    <div class="card-header"><span class="card-title">🔥 Habit Tracker</span><span style="font-size:.71rem;color:var(--muted)">Mon – Sun this week</span></div>
+    <div class="row" style="margin-bottom:13px">
+      <input type="text" id="habit-input" placeholder="New habit (e.g. Meditate, Read…)" onkeydown="if(event.key==='Enter')addHabit()"/>
+      <button class="btn btn-primary" onclick="addHabit()">Add</button>
+    </div>
+    <div id="habit-list"></div>
+  </div>
+</div>
+
+<!-- MEALS -->
+<div id="meals" class="panel">
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🍽️ Meal Planner</span>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-ghost btn-sm" onclick="mealWeekOffset--;renderMealPlanner()">← Prev</button>
+        <button class="btn btn-ghost btn-sm" onclick="mealWeekOffset=0;renderMealPlanner()">Today</button>
+        <button class="btn btn-ghost btn-sm" onclick="mealWeekOffset++;renderMealPlanner()">Next →</button>
+      </div>
+    </div>
+    <div id="meal-week-label" style="font-size:.77rem;color:var(--muted);margin-bottom:13px"></div>
+    <div class="row" style="flex-wrap:wrap;gap:7px;margin-bottom:13px">
+      <select id="meal-day" style="width:122px"><option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option><option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option></select>
+      <select id="meal-type" style="width:115px"><option value="Breakfast">🌅 Breakfast</option><option value="Lunch">☀️ Lunch</option><option value="Dinner">🌙 Dinner</option><option value="Snack">🍎 Snack</option></select>
+      <input type="text" id="meal-input" placeholder="Meal + calories (e.g. Oats 350kcal)" style="flex:1" onkeydown="if(event.key==='Enter')addMeal()"/>
+      <button class="btn btn-primary" onclick="addMeal()">Add</button>
+    </div>
+    <div id="meal-grid" class="meal-grid"></div>
+  </div>
+</div>
+
+<!-- GROCERY -->
+<div id="grocery" class="panel">
+  <div class="card" style="max-width:560px">
+    <div class="card-header"><span class="card-title">🛒 Grocery List</span><span id="grocery-count" style="font-size:.77rem;color:var(--muted)"></span></div>
+    <div class="row" style="flex-wrap:wrap;gap:7px;margin-bottom:9px">
+      <input type="text" id="grocery-input" placeholder="Item name…" style="flex:1;min-width:120px" onkeydown="if(event.key==='Enter')addGrocery()"/>
+      <select id="grocery-cat" style="width:122px"><option value="Produce">🥦 Produce</option><option value="Dairy">🥛 Dairy</option><option value="Meat">🥩 Meat</option><option value="Bakery">🍞 Bakery</option><option value="Pantry">🥫 Pantry</option><option value="Frozen">❄️ Frozen</option><option value="Drinks">🧃 Drinks</option><option value="Other">📦 Other</option></select>
+      <input type="number" id="grocery-qty" placeholder="Qty" style="width:62px" min="1"/>
+      <button class="btn btn-primary" onclick="addGrocery()">Add</button>
+    </div>
+    <div style="text-align:right;margin-bottom:8px"><button class="btn btn-ghost btn-sm" onclick="clearCheckedGrocery()">Remove Checked</button></div>
+    <ul id="grocery-list" class="grocery-list"></ul>
+  </div>
+</div>
+
+<!-- WORKOUT -->
+<div id="workout" class="panel">
+  <div class="card" style="max-width:840px">
+    <div class="card-header"><span class="card-title">💪 Workout Tracker</span><input type="date" id="workout-date" style="width:145px" onchange="renderWorkout()"/></div>
+    <div class="row" style="flex-wrap:wrap;gap:7px;margin-bottom:13px">
+      <input type="text" id="ex-name" placeholder="Exercise name" style="flex:2;min-width:110px" onkeydown="if(event.key==='Enter')addExercise()"/>
+      <input type="number" id="ex-sets" placeholder="Sets" style="width:65px" min="1"/>
+      <input type="number" id="ex-reps" placeholder="Reps" style="width:65px" min="1"/>
+      <input type="number" id="ex-weight" placeholder="kg" style="width:70px" min="0" step="0.5"/>
+      <input type="text" id="ex-notes" placeholder="Notes" style="flex:1;min-width:80px"/>
+      <button class="btn btn-primary" onclick="addExercise()">Add</button>
+    </div>
+    <div class="ex-row ex-head"><span>Exercise</span><span>Sets</span><span>Reps</span><span>Weight</span><span></span></div>
+    <div id="exercise-list"></div>
+    <div id="workout-summary" style="margin-top:9px;font-size:.77rem;color:var(--muted)"></div>
+  </div>
+</div>
+
+<!-- NOTES -->
+<div id="notes" class="panel">
+  <div class="card">
+    <div class="card-header"><span class="card-title">📝 Notes</span><button class="btn btn-primary btn-sm" onclick="newNote()">+ New Note</button></div>
+    <div class="notes-grid">
+      <div><input type="text" id="note-search" placeholder="🔍 Search…" oninput="renderNotes()" style="margin-bottom:8px"/><div id="notes-list" class="notes-list"></div></div>
+      <div class="note-editor">
+        <input type="text" id="note-title" placeholder="Note title…" style="font-size:.93rem;font-weight:600"/>
+        <select id="note-tag" style="width:142px"><option value="General">📌 General</option><option value="Work">💼 Work</option><option value="Ideas">💡 Ideas</option><option value="Personal">🏠 Personal</option><option value="Health">❤️ Health</option></select>
+        <textarea id="note-body" placeholder="Start writing…"></textarea>
+        <div style="display:flex;gap:7px"><button class="btn btn-primary" onclick="saveNote()">💾 Save</button><button class="btn btn-danger btn-sm" onclick="deleteNote()">🗑 Delete</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BUDGET -->
+<div id="budget" class="panel">
+  <div class="card" style="max-width:760px">
+    <div class="card-header"><span class="card-title">💰 Budget Tracker</span><input type="month" id="budget-month" onchange="renderBudget()" style="width:145px"/></div>
+    <div class="budget-summary">
+      <div class="budget-box"><div class="blabel">Income</div><div class="amount income-color" id="total-income">$0.00</div></div>
+      <div class="budget-box"><div class="blabel">Expenses</div><div class="amount expense-color" id="total-expenses">$0.00</div></div>
+      <div class="budget-box"><div class="blabel">Balance</div><div class="amount balance-color" id="balance">$0.00</div></div>
+    </div>
+    <div class="row" style="flex-wrap:wrap;gap:7px;margin-bottom:13px">
+      <input type="text" id="tx-desc" placeholder="Description" style="flex:2;min-width:130px" onkeydown="if(event.key==='Enter')addTransaction()"/>
+      <input type="number" id="tx-amount" placeholder="Amount" style="width:100px" min="0" step="0.01"/>
+      <select id="tx-type" style="width:112px"><option value="income">+ Income</option><option value="expense">− Expense</option></select>
+      <select id="tx-cat" style="width:124px"><option value="Food">🍔 Food</option><option value="Transport">🚗 Transport</option><option value="Shopping">🛍 Shopping</option><option value="Health">❤️ Health</option><option value="Entertainment">🎬 Fun</option><option value="Bills">💡 Bills</option><option value="Salary">💼 Salary</option><option value="Other">📌 Other</option></select>
+      <button class="btn btn-primary" onclick="addTransaction()">Add</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 95px 88px 34px;gap:7px;padding:5px 0;border-bottom:2px solid var(--border);font-size:.71rem;color:var(--muted)"><span>Description</span><span>Category</span><span>Amount</span><span></span></div>
+    <div id="tx-list"></div>
+  </div>
+</div>
+
+<!-- GOALS -->
+<div id="goals" class="panel">
+  <div style="display:grid;grid-template-columns:320px 1fr;gap:14px">
+    <div class="card">
+      <div class="card-header"><span class="card-title">🎯 New Goal</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <input type="text" id="goal-title" placeholder="Goal title…"/>
+        <textarea id="goal-desc" placeholder="Description (optional)" rows="2"></textarea>
+        <div class="row"><input type="number" id="goal-target" placeholder="Target value" style="flex:1" min="1"/><input type="text" id="goal-unit" placeholder="Unit (km, $…)" style="flex:1"/></div>
+        <input type="date" id="goal-deadline"/>
+        <select id="goal-category"><option value="Health">❤️ Health</option><option value="Finance">💰 Finance</option><option value="Learning">📚 Learning</option><option value="Career">💼 Career</option><option value="Personal">🏠 Personal</option></select>
+        <button class="btn btn-primary" onclick="addGoal()">Add Goal</button>
+      </div>
+    </div>
+    <div class="card"><div class="card-header"><span class="card-title">📊 Progress Tracker</span></div><div id="goal-list"></div></div>
+  </div>
+</div>
+
+<!-- POMODORO -->
+<div id="pomodoro" class="panel">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:780px">
+    <div class="card">
+      <div class="card-header"><span class="card-title">⏱️ Pomodoro Timer</span></div>
+      <div class="pomo-center">
+        <div class="pomo-ring"><span id="pomo-time">25:00</span></div>
+        <div class="pomo-label" id="pomo-label">Focus Session</div>
+        <div class="pomo-btns">
+          <button class="btn btn-primary" id="pomo-start" onclick="pomodoroToggle()">▶ Start</button>
+          <button class="btn btn-ghost" onclick="pomodoroReset()">↺ Reset</button>
         </div>
-    </div>
-
-    <!-- Modal for Password Reset -->
-    <div id="passwordResetModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">पासवर्ड रिसेट</h2>
-                <button class="close" id="closePasswordModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="resetAlert" class="alert alert-danger hidden"></div>
-                <form id="passwordResetForm">
-                    <div class="form-group">
-                        <label for="resetUsername">प्रयोगकर्ता नाम</label>
-                        <input type="text" id="resetUsername" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="newPassword">नयाँ पासवर्ड</label>
-                        <input type="password" id="newPassword" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirmPassword">पासवर्ड पुष्टि गर्नुहोस्</label>
-                        <input type="password" id="confirmPassword" class="form-control" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button id="resetPasswordBtn" class="btn btn-primary">पासवर्ड परिवर्तन गर्नुहोस्</button>
-            </div>
+        <div style="display:flex;gap:6px;justify-content:center;margin-bottom:16px">
+          <button class="btn btn-ghost btn-sm pomo-mode-btn active" onclick="setPomoMode(25,'Focus Session',this)">25 min</button>
+          <button class="btn btn-ghost btn-sm pomo-mode-btn" onclick="setPomoMode(5,'Short Break',this)">5 min</button>
+          <button class="btn btn-ghost btn-sm pomo-mode-btn" onclick="setPomoMode(15,'Long Break',this)">15 min</button>
         </div>
+        <div class="pomo-stats">
+          <div class="pomo-stat"><div class="val" id="pomo-sessions">0</div><div class="lbl">Sessions</div></div>
+          <div class="pomo-stat"><div class="val" id="pomo-mins">0</div><div class="lbl">Mins Focused</div></div>
+        </div>
+      </div>
     </div>
-
-    <div class="dashboard-container">
-        <!-- मोबाइल साइडबार टगल बटन -->
-        <button id="mobileToggle" class="mobile-toggle">
-            <i class="fas fa-bars"></i>
-        </button>
+    <div class="card">
+      <div class="card-header"><span class="card-title">🔔 Reminders</span></div>
+      <div class="row" style="margin-bottom:11px">
+        <input type="time" id="reminder-time" style="width:106px"/>
+        <input type="text" id="reminder-msg" placeholder="Reminder…" style="flex:1" onkeydown="if(event.key==='Enter')addReminder()"/>
+        <button class="btn btn-primary" onclick="addReminder()">Add</button>
+      </div>
+      <div id="reminder-list"></div>
     </div>
+  </div>
+</div>
 
-    <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/app.js"></script>
+</main>
+
+<script>
+// ── UTILITIES (defined first so everything below can use them) ───────────
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function pad(n){return String(n).padStart(2,'0');}
+function showToast(msg){
+  let t=document.getElementById('__toast');
+  if(!t){t=document.createElement('div');t.id='__toast';
+    t.style.cssText='position:fixed;bottom:22px;right:22px;background:#6c63ff;color:#fff;padding:10px 18px;border-radius:9px;font-size:.83rem;z-index:9999;box-shadow:0 4px 18px #0008;transition:opacity .4s;pointer-events:none';
+    document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';},2600);
+}
+
+// ── STORAGE ──────────────────────────────────────────────────────────────
+const LS={
+  get(k,def){try{const v=localStorage.getItem(k);return v===null?def:JSON.parse(v);}catch{return def;}},
+  set(k,v){localStorage.setItem(k,JSON.stringify(v));}
+};
+function initStore(k,d){if(localStorage.getItem(k)===null)LS.set(k,d);}
+['tasks','habits','reminders','notes','transactions','goals'].forEach(k=>initStore(k,[]));
+['weekplan','meals','workouts'].forEach(k=>initStore(k,{}));
+initStore('grocery',[]);
+
+// ── DATE HELPERS ──────────────────────────────────────────────────────────
+const TODAY = new Date().toISOString().split('T')[0];
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const MEAL_TYPES = ['Breakfast','Lunch','Dinner','Snack'];
+function fmtFull(d){return d instanceof Date ? d.toISOString().split('T')[0] : d;}
+function fmtShort(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function getWeekDates(offset){
+  const d=new Date();
+  d.setDate(d.getDate()-((d.getDay()+6)%7)+offset*7);
+  return Array.from({length:7},(_,i)=>{const x=new Date(d);x.setDate(d.getDate()+i);return x;});
+}
+
+// ── INIT HEADER ───────────────────────────────────────────────────────────
+document.getElementById('date-display').textContent=
+  new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────
+let taskFilter='all';
+document.getElementById('main-nav').addEventListener('click',e=>{
+  const b=e.target.closest('.tab-btn');
+  if(b) switchTab(b.dataset.panel);
+});
+function switchTab(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.panel===id));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));
+  const map={dashboard:refreshDashboard,tasks:renderTasks,planner:renderWeekPlanner,
+    habits:renderHabits,meals:renderMealPlanner,grocery:renderGrocery,
+    workout:renderWorkout,notes:renderNotes,budget:renderBudget,goals:renderGoals,
+    pomodoro:renderReminders};
+  if(map[id]) map[id]();
+}
+</script>
+
+<script>
+// ── TASKS ─────────────────────────────────────────────────────────────────
+function addTask(){
+  const inp=document.getElementById('task-input');
+  const txt=inp.value.trim(); if(!txt) return;
+  const tasks=LS.get('tasks',[]);
+  tasks.push({id:Date.now(),text:txt,done:false,
+    priority:document.getElementById('task-priority').value,
+    category:document.getElementById('task-category').value,
+    date:TODAY});
+  LS.set('tasks',tasks); inp.value=''; renderTasks();
+}
+function toggleTask(id){
+  const t=LS.get('tasks',[]); const i=t.findIndex(x=>x.id===id);
+  if(i<0) return; t[i].done=!t[i].done; LS.set('tasks',t); renderTasks();
+}
+function deleteTask(id){LS.set('tasks',LS.get('tasks',[]).filter(x=>x.id!==id)); renderTasks();}
+function clearDoneTasks(){LS.set('tasks',LS.get('tasks',[]).filter(x=>!x.done)); renderTasks();}
+function renderTasks(){
+  const all=LS.get('tasks',[]).filter(x=>x.date===TODAY);
+  const show=all.filter(t=>
+    taskFilter==='all'?true:taskFilter==='active'?!t.done:
+    taskFilter==='done'?t.done:t.priority===taskFilter);
+  const el=document.getElementById('task-list'); if(!el) return;
+  el.innerHTML=show.length ? show.map(t=>`
+    <div class="task-item${t.done?' done':''}">
+      <input type="checkbox"${t.done?' checked':''} onchange="toggleTask(${t.id})"/>
+      <span class="task-text">${esc(t.text)}</span>
+      <span class="priority p-${t.priority}">${t.priority}</span>
+      <span style="font-size:.7rem;color:var(--muted);flex-shrink:0">${t.category}</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteTask(${t.id})">✕</button>
+    </div>`).join('') : '<p class="muted-text">No tasks for this filter</p>';
+  const s=document.getElementById('task-stats');
+  if(s) s.textContent=`${all.filter(x=>x.done).length}/${all.length} done today`;
+  document.querySelectorAll('.filter-btn').forEach(b=>
+    b.classList.toggle('active',b.dataset.filter===taskFilter));
+}
+document.addEventListener('click',e=>{
+  const fb=e.target.closest('.filter-btn');
+  if(fb){taskFilter=fb.dataset.filter; renderTasks();}
+});
+
+// ── WEEKLY PLANNER ────────────────────────────────────────────────────────
+let weekOffset=0;
+function addWeekTask(){
+  const day=parseInt(document.getElementById('plan-day').value);
+  const val=document.getElementById('plan-task').value.trim(); if(!val) return;
+  const wp=LS.get('weekplan',{});
+  const key=fmtFull(getWeekDates(weekOffset)[day]);
+  if(!wp[key]) wp[key]=[];
+  wp[key].push({id:Date.now(),text:val});
+  LS.set('weekplan',wp); document.getElementById('plan-task').value=''; renderWeekPlanner();
+}
+function removeWeekTask(key,id){
+  const wp=LS.get('weekplan',{});
+  if(wp[key]) wp[key]=wp[key].filter(x=>x.id!==id);
+  LS.set('weekplan',wp); renderWeekPlanner();
+}
+function renderWeekPlanner(){
+  const dates=getWeekDates(weekOffset);
+  const wp=LS.get('weekplan',{});
+  document.getElementById('week-range').textContent=`${fmtShort(dates[0])} – ${fmtShort(dates[6])}`;
+  document.getElementById('week-grid').innerHTML=dates.map((d,i)=>{
+    const key=fmtFull(d); const isToday=key===TODAY;
+    const items=(wp[key]||[]).map(t=>
+      `<div class="day-task" onclick="removeWeekTask('${key}',${t.id})" title="Click to remove">${esc(t.text)}</div>`).join('');
+    return `<div class="day-col${isToday?' today':''}">
+      <h4>${DAYS[i]}<br/><span style="font-weight:400">${fmtShort(d)}</span></h4>${items}
+    </div>`;
+  }).join('');
+}
+
+// ── HABITS ────────────────────────────────────────────────────────────────
+function addHabit(){
+  const inp=document.getElementById('habit-input');
+  const val=inp.value.trim(); if(!val) return;
+  const h=LS.get('habits',[]); h.push({id:Date.now(),name:val,log:{}});
+  LS.set('habits',h); inp.value=''; renderHabits();
+}
+function toggleHabitDay(id,key){
+  const h=LS.get('habits',[]); const item=h.find(x=>x.id===id); if(!item) return;
+  if(!item.log) item.log={};
+  item.log[key]=!item.log[key]; LS.set('habits',h); renderHabits();
+}
+function deleteHabit(id){LS.set('habits',LS.get('habits',[]).filter(x=>x.id!==id)); renderHabits();}
+function getStreak(log){
+  if(!log) return 0;
+  let s=0, d=new Date();
+  while(true){const k=fmtFull(d); if(!log[k]) break; s++; d.setDate(d.getDate()-1);}
+  return s;
+}
+function renderHabits(){
+  const habits=LS.get('habits',[]); const dates=getWeekDates(0);
+  const el=document.getElementById('habit-list'); if(!el) return;
+  el.innerHTML=habits.length ? habits.map(h=>`
+    <div class="habit-row">
+      <span class="habit-name">${esc(h.name)}</span>
+      <div class="habit-days">${dates.map((d,i)=>{
+        const key=fmtFull(d); const done=(h.log||{})[key];
+        return `<div class="day-dot${done?' done':''}" onclick="toggleHabitDay(${h.id},'${key}')" title="${DAYS[i]}">${DAYS[i][0]}</div>`;
+      }).join('')}</div>
+      <span class="streak">🔥${getStreak(h.log)}</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteHabit(${h.id})">✕</button>
+    </div>`).join('') : '<p class="muted-text">No habits yet — add your first one!</p>';
+}
+</script>
+
+<script>
+// ── MEAL PLANNER ──────────────────────────────────────────────────────────
+let mealWeekOffset=0;
+function addMeal(){
+  const val=document.getElementById('meal-input').value.trim(); if(!val) return;
+  const day=parseInt(document.getElementById('meal-day').value);
+  const type=document.getElementById('meal-type').value;
+  const meals=LS.get('meals',{});
+  const key=fmtFull(getWeekDates(mealWeekOffset)[day]);
+  if(!meals[key]) meals[key]={};
+  if(!meals[key][type]) meals[key][type]=[];
+  meals[key][type].push({id:Date.now(),text:val});
+  LS.set('meals',meals); document.getElementById('meal-input').value=''; renderMealPlanner();
+}
+function removeMeal(dateKey,type,id){
+  const meals=LS.get('meals',{});
+  if(meals[dateKey]&&meals[dateKey][type])
+    meals[dateKey][type]=meals[dateKey][type].filter(x=>x.id!==id);
+  LS.set('meals',meals); renderMealPlanner();
+}
+function renderMealPlanner(){
+  const dates=getWeekDates(mealWeekOffset);
+  const meals=LS.get('meals',{});
+  document.getElementById('meal-week-label').textContent=`Week of ${fmtShort(dates[0])} – ${fmtShort(dates[6])}`;
+  document.getElementById('meal-grid').innerHTML=dates.map((d,i)=>{
+    const key=fmtFull(d); const dm=meals[key]||{};
+    const secs=MEAL_TYPES.filter(t=>(dm[t]||[]).length>0).map(t=>`
+      <div style="margin-bottom:6px">
+        <div style="font-size:.69rem;color:var(--accent4);font-weight:700;margin-bottom:3px">${t}</div>
+        ${dm[t].map(m=>`<div class="meal-entry"><span>${esc(m.text)}</span>
+          <button class="btn btn-danger btn-sm" style="padding:1px 6px" onclick="removeMeal('${key}','${t}',${m.id})">✕</button></div>`).join('')}
+      </div>`).join('');
+    return `<div class="meal-slot">
+      <h4>${DAYS[i]} <span style="color:var(--muted);font-weight:400">${fmtShort(d)}</span></h4>
+      ${secs||'<span style="font-size:.74rem;color:var(--muted)">Not planned</span>'}
+    </div>`;
+  }).join('');
+}
+
+// ── GROCERY ───────────────────────────────────────────────────────────────
+function addGrocery(){
+  const inp=document.getElementById('grocery-input');
+  const val=inp.value.trim(); if(!val) return;
+  const g=LS.get('grocery',[]);
+  g.push({id:Date.now(),name:val,
+    cat:document.getElementById('grocery-cat').value,
+    qty:document.getElementById('grocery-qty').value||1,
+    checked:false});
+  LS.set('grocery',g); inp.value=''; document.getElementById('grocery-qty').value=''; renderGrocery();
+}
+function toggleGrocery(id){
+  const g=LS.get('grocery',[]); const i=g.findIndex(x=>x.id===id);
+  if(i<0) return; g[i].checked=!g[i].checked; LS.set('grocery',g); renderGrocery();
+}
+function deleteGrocery(id){LS.set('grocery',LS.get('grocery',[]).filter(x=>x.id!==id)); renderGrocery();}
+function clearCheckedGrocery(){LS.set('grocery',LS.get('grocery',[]).filter(x=>!x.checked)); renderGrocery();}
+function renderGrocery(){
+  const items=LS.get('grocery',[]);
+  const el=document.getElementById('grocery-list'); if(!el) return;
+  const chk=items.filter(x=>x.checked).length;
+  const cnt=document.getElementById('grocery-count');
+  if(cnt) cnt.textContent=`${chk}/${items.length} checked`;
+  el.innerHTML=items.length ? items.map(g=>`
+    <li class="grocery-item${g.checked?' checked':''}">
+      <input type="checkbox"${g.checked?' checked':''} onchange="toggleGrocery(${g.id})"/>
+      <span class="g-name">${esc(g.name)}</span>
+      <span style="font-size:.74rem;color:var(--muted)">×${g.qty}</span>
+      <span class="grocery-cat">${esc(g.cat)}</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteGrocery(${g.id})">✕</button>
+    </li>`).join('') : '<li class="muted-text">Your list is empty</li>';
+}
+
+// ── WORKOUT ───────────────────────────────────────────────────────────────
+function addExercise(){
+  const name=document.getElementById('ex-name').value.trim(); if(!name) return;
+  const date=document.getElementById('workout-date').value||TODAY;
+  const w=LS.get('workouts',{});
+  if(!w[date]) w[date]=[];
+  w[date].push({id:Date.now(),name,
+    sets:document.getElementById('ex-sets').value,
+    reps:document.getElementById('ex-reps').value,
+    weight:document.getElementById('ex-weight').value,
+    notes:document.getElementById('ex-notes').value});
+  LS.set('workouts',w);
+  ['ex-name','ex-sets','ex-reps','ex-weight','ex-notes'].forEach(id=>document.getElementById(id).value='');
+  renderWorkout();
+}
+function deleteExercise(date,id){
+  const w=LS.get('workouts',{});
+  if(w[date]) w[date]=w[date].filter(x=>x.id!==id);
+  LS.set('workouts',w); renderWorkout();
+}
+function renderWorkout(){
+  const date=document.getElementById('workout-date').value||TODAY;
+  const items=(LS.get('workouts',{})[date])||[];
+  const el=document.getElementById('exercise-list'); if(!el) return;
+  el.innerHTML=items.length ? items.map(e=>`
+    <div class="ex-row">
+      <span>${esc(e.name)}${e.notes?`<span style="font-size:.69rem;color:var(--muted)"> · ${esc(e.notes)}</span>`:''}</span>
+      <span>${e.sets||'—'}</span><span>${e.reps||'—'}</span>
+      <span>${e.weight?e.weight+'kg':'—'}</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteExercise('${date}',${e.id})">✕</button>
+    </div>`).join('') : '<p class="muted-text">No exercises logged for this day</p>';
+  const sumEl=document.getElementById('workout-summary');
+  if(sumEl) sumEl.textContent=items.length ?
+    `${items.length} exercises · ${items.reduce((a,e)=>a+(parseInt(e.sets)||0),0)} total sets` : '';
+}
+</script>
+
+<script>
+// ── NOTES ─────────────────────────────────────────────────────────────────
+let activeNoteId=null;
+function newNote(){
+  const notes=LS.get('notes',[]);
+  const n={id:Date.now(),title:'Untitled',body:'',tag:'General',updated:Date.now()};
+  notes.unshift(n); LS.set('notes',notes); activeNoteId=n.id;
+  loadNoteEditor(n); renderNotes();
+}
+function saveNote(){
+  if(activeNoteId===null){newNote(); return;}
+  const notes=LS.get('notes',[]);
+  const i=notes.findIndex(n=>n.id===activeNoteId); if(i<0) return;
+  notes[i]={...notes[i],
+    title:document.getElementById('note-title').value.trim()||'Untitled',
+    body:document.getElementById('note-body').value,
+    tag:document.getElementById('note-tag').value,
+    updated:Date.now()};
+  notes.sort((a,b)=>b.updated-a.updated);
+  LS.set('notes',notes); renderNotes(); showToast('Note saved ✓');
+}
+function deleteNote(){
+  if(activeNoteId===null) return;
+  LS.set('notes',LS.get('notes',[]).filter(n=>n.id!==activeNoteId));
+  activeNoteId=null;
+  document.getElementById('note-title').value='';
+  document.getElementById('note-body').value='';
+  renderNotes();
+}
+function loadNoteEditor(n){
+  document.getElementById('note-title').value=n.title;
+  document.getElementById('note-body').value=n.body;
+  document.getElementById('note-tag').value=n.tag||'General';
+}
+function renderNotes(){
+  const q=(document.getElementById('note-search')?.value||'').toLowerCase();
+  const notes=LS.get('notes',[]).filter(n=>
+    n.title.toLowerCase().includes(q)||n.body.toLowerCase().includes(q));
+  const el=document.getElementById('notes-list'); if(!el) return;
+  el.innerHTML=notes.length ? notes.map(n=>`
+    <div class="note-item${n.id===activeNoteId?' active':''}" data-nid="${n.id}">
+      <h5>${esc(n.title)}</h5>
+      <p>${esc((n.body||'').slice(0,55))||'Empty note'}</p>
+    </div>`).join('') : '<p class="muted-text">No notes found</p>';
+  el.querySelectorAll('.note-item').forEach(item=>{
+    item.addEventListener('click',()=>{
+      activeNoteId=parseInt(item.dataset.nid);
+      const n=LS.get('notes',[]).find(x=>x.id===activeNoteId);
+      if(n) loadNoteEditor(n);
+      renderNotes();
+    });
+  });
+}
+function saveQuickNote(){
+  const val=document.getElementById('quick-note').value.trim(); if(!val) return;
+  const notes=LS.get('notes',[]);
+  notes.unshift({id:Date.now(),
+    title:'Quick Note · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),
+    body:val,tag:'General',updated:Date.now()});
+  LS.set('notes',notes); document.getElementById('quick-note').value='';
+  showToast('Saved to Notes ✓');
+}
+
+// ── BUDGET ────────────────────────────────────────────────────────────────
+function addTransaction(){
+  const desc=document.getElementById('tx-desc').value.trim(); if(!desc) return;
+  const amount=parseFloat(document.getElementById('tx-amount').value);
+  if(!amount||amount<=0) return;
+  const month=document.getElementById('budget-month').value||TODAY.slice(0,7);
+  const txs=LS.get('transactions',[]);
+  txs.push({id:Date.now(),desc,amount,
+    type:document.getElementById('tx-type').value,
+    cat:document.getElementById('tx-cat').value,month});
+  LS.set('transactions',txs);
+  document.getElementById('tx-desc').value='';
+  document.getElementById('tx-amount').value='';
+  renderBudget();
+}
+function deleteTx(id){LS.set('transactions',LS.get('transactions',[]).filter(x=>x.id!==id)); renderBudget();}
+function renderBudget(){
+  const month=document.getElementById('budget-month')?.value||TODAY.slice(0,7);
+  const txs=LS.get('transactions',[]).filter(x=>x.month===month);
+  const income=txs.filter(x=>x.type==='income').reduce((a,x)=>a+x.amount,0);
+  const expenses=txs.filter(x=>x.type==='expense').reduce((a,x)=>a+x.amount,0);
+  const bal=income-expenses;
+  document.getElementById('total-income').textContent='$'+income.toFixed(2);
+  document.getElementById('total-expenses').textContent='$'+expenses.toFixed(2);
+  const balEl=document.getElementById('balance');
+  balEl.textContent=(bal<0?'-':'')+'$'+Math.abs(bal).toFixed(2);
+  balEl.className='amount '+(bal>=0?'balance-color':'expense-color');
+  document.getElementById('tx-list').innerHTML=txs.length ?
+    [...txs].reverse().map(t=>`
+    <div class="tx-item">
+      <span>${esc(t.desc)}</span>
+      <span style="color:var(--muted)">${esc(t.cat)}</span>
+      <span class="${t.type==='income'?'income-color':'expense-color'}">${t.type==='income'?'+':'−'}$${t.amount.toFixed(2)}</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteTx(${t.id})">✕</button>
+    </div>`).join('') : '<p class="muted-text">No transactions this month</p>';
+}
+
+// ── GOALS ─────────────────────────────────────────────────────────────────
+function addGoal(){
+  const title=document.getElementById('goal-title').value.trim(); if(!title) return;
+  const goals=LS.get('goals',[]);
+  goals.push({id:Date.now(),title,
+    desc:document.getElementById('goal-desc').value,
+    target:parseFloat(document.getElementById('goal-target').value)||100,
+    current:0,
+    unit:document.getElementById('goal-unit').value||'',
+    deadline:document.getElementById('goal-deadline').value,
+    category:document.getElementById('goal-category').value});
+  LS.set('goals',goals);
+  ['goal-title','goal-desc','goal-target','goal-unit','goal-deadline'].forEach(id=>document.getElementById(id).value='');
+  renderGoals(); showToast('Goal added ✓');
+}
+function updateGoalProgress(id,val){
+  const goals=LS.get('goals',[]); const g=goals.find(x=>x.id===id); if(!g) return;
+  g.current=Math.min(Math.max(parseFloat(val)||0,0),g.target);
+  LS.set('goals',goals); renderGoals();
+}
+function deleteGoal(id){LS.set('goals',LS.get('goals',[]).filter(x=>x.id!==id)); renderGoals();}
+function renderGoals(){
+  const goals=LS.get('goals',[]);
+  const el=document.getElementById('goal-list'); if(!el) return;
+  el.innerHTML=goals.length ? goals.map(g=>{
+    const pct=Math.round((g.current/g.target)*100);
+    const daysLeft=g.deadline?Math.ceil((new Date(g.deadline)-new Date())/86400000):null;
+    return `<div class="goal-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px">
+        <div>
+          <h4>${esc(g.title)} <span style="font-size:.66rem;background:var(--border);padding:2px 7px;border-radius:20px;font-weight:400">${g.category}</span></h4>
+          ${g.desc?`<p style="font-size:.76rem;color:var(--muted);margin:3px 0">${esc(g.desc)}</p>`:''}
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="deleteGoal(${g.id})" style="flex-shrink:0">✕</button>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="goal-meta">
+        <span>${g.current} / ${g.target} ${esc(g.unit)} (${pct}%)</span>
+        ${daysLeft!==null?`<span style="color:${daysLeft<0?'var(--danger)':daysLeft<7?'var(--accent4)':'var(--muted)'}">${daysLeft>0?daysLeft+' days left':daysLeft===0?'Due today!':'Overdue'}</span>`:''}
+      </div>
+      <div class="row" style="margin-top:7px">
+        <input type="number" placeholder="Update progress…" min="0" max="${g.target}" value="${g.current}" style="flex:1" oninput="updateGoalProgress(${g.id},this.value)"/>
+      </div>
+    </div>`;
+  }).join('') : '<p class="muted-text">No goals yet — add one on the left!</p>';
+}
+</script>
+
+<script>
+// ── POMODORO ──────────────────────────────────────────────────────────────
+let pomoTimer=null,pomoSecondsLeft=1500,pomoRunning=false,
+    pomoSessions=0,pomoTotalMins=0,pomoInitMins=25;
+function setPomoMode(mins,label,btn){
+  pomodoroReset(); pomoInitMins=mins; pomoSecondsLeft=mins*60;
+  document.getElementById('pomo-label').textContent=label;
+  document.getElementById('pomo-time').textContent=pad(mins)+':00';
+  document.querySelectorAll('.pomo-mode-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+function pomodoroToggle(){
+  if(pomoRunning){
+    clearInterval(pomoTimer); pomoRunning=false;
+    document.getElementById('pomo-start').textContent='▶ Resume';
+  } else {
+    pomoRunning=true;
+    document.getElementById('pomo-start').textContent='⏸ Pause';
+    pomoTimer=setInterval(()=>{
+      pomoSecondsLeft--;
+      const m=Math.floor(pomoSecondsLeft/60), s=pomoSecondsLeft%60;
+      document.getElementById('pomo-time').textContent=`${pad(m)}:${pad(s)}`;
+      if(pomoSecondsLeft<=0){
+        clearInterval(pomoTimer); pomoRunning=false;
+        pomoSessions++; pomoTotalMins+=pomoInitMins;
+        document.getElementById('pomo-sessions').textContent=pomoSessions;
+        document.getElementById('pomo-mins').textContent=pomoTotalMins;
+        document.getElementById('pomo-start').textContent='▶ Start';
+        showToast('🎉 Session complete! Take a break.');
+        if(Notification.permission==='granted')
+          new Notification('Pomodoro Complete ✓',{body:'Session done! Time for a break.'});
+      }
+    },1000);
+  }
+}
+function pomodoroReset(){
+  clearInterval(pomoTimer); pomoRunning=false;
+  pomoSecondsLeft=pomoInitMins*60;
+  document.getElementById('pomo-time').textContent=`${pad(pomoInitMins)}:00`;
+  document.getElementById('pomo-start').textContent='▶ Start';
+}
+
+// ── REMINDERS ─────────────────────────────────────────────────────────────
+function addReminder(){
+  const time=document.getElementById('reminder-time').value;
+  const msg=document.getElementById('reminder-msg').value.trim(); if(!msg) return;
+  const r=LS.get('reminders',[]);
+  r.push({id:Date.now(),time,msg,date:TODAY});
+  r.sort((a,b)=>a.time.localeCompare(b.time));
+  LS.set('reminders',r);
+  document.getElementById('reminder-time').value='';
+  document.getElementById('reminder-msg').value='';
+  renderReminders();
+}
+function deleteReminder(id){LS.set('reminders',LS.get('reminders',[]).filter(x=>x.id!==id)); renderReminders();}
+function renderReminders(){
+  const items=LS.get('reminders',[]).filter(r=>r.date===TODAY);
+  const el=document.getElementById('reminder-list'); if(!el) return;
+  el.innerHTML=items.length ? items.map(r=>`
+    <div class="reminder-item">
+      <span class="rtime">${r.time||'—'}</span>
+      <span class="rmsg">${esc(r.msg)}</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteReminder(${r.id})">✕</button>
+    </div>`).join('') : '<p class="muted-text">No reminders for today</p>';
+}
+// Notify on time match
+setInterval(()=>{
+  const now=new Date();
+  const hhmm=`${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  LS.get('reminders',[]).filter(r=>r.date===TODAY&&r.time===hhmm).forEach(r=>{
+    if(Notification.permission==='granted') new Notification('⏰ Reminder',{body:r.msg});
+    else showToast('⏰ '+r.msg);
+  });
+},30000);
+if(Notification.permission==='default') Notification.requestPermission();
+
+// ── DASHBOARD REFRESH ──────────────────────────────────────────────────────
+function refreshDashboard(){
+  // Tasks
+  const todayTasks=LS.get('tasks',[]).filter(x=>x.date===TODAY);
+  document.getElementById('dash-task-count').textContent=todayTasks.filter(x=>!x.done).length+' left';
+  document.getElementById('dash-tasks').innerHTML=todayTasks.length ?
+    todayTasks.slice(0,6).map(t=>`
+      <div class="task-item${t.done?' done':''}">
+        <input type="checkbox"${t.done?' checked':''} onchange="toggleTask(${t.id});refreshDashboard()"/>
+        <span class="task-text">${esc(t.text)}</span>
+        <span class="priority p-${t.priority}">${t.priority}</span>
+      </div>`).join('') : '<p class="muted-text">No tasks today</p>';
+  // Habits
+  const habits=LS.get('habits',[]);
+  document.getElementById('dash-habits').innerHTML=habits.length ?
+    habits.slice(0,6).map(h=>{
+      const done=(h.log||{})[TODAY];
+      return `<div class="habit-row"><span class="habit-name">${esc(h.name)}</span><span>${done?'✅':'⬜'}</span><span class="streak">🔥${getStreak(h.log)}</span></div>`;
+    }).join('') : '<p class="muted-text">No habits set up</p>';
+  // Meals
+  const todayMeals=(LS.get('meals',{})[TODAY])||{};
+  document.getElementById('dash-meals').innerHTML=MEAL_TYPES.map(t=>`
+    <div style="font-size:.79rem;padding:4px 0;border-bottom:1px solid var(--border)">
+      <span style="color:var(--accent4);font-weight:600">${t}: </span>
+      <span style="color:${(todayMeals[t]||[]).length?'var(--text)':'var(--muted)'}">
+        ${(todayMeals[t]||[]).map(m=>esc(m.text)).join(', ')||'Not planned'}
+      </span>
+    </div>`).join('');
+  // Workout
+  const todayWorkout=(LS.get('workouts',{})[TODAY])||[];
+  document.getElementById('dash-workout').innerHTML=todayWorkout.length ?
+    todayWorkout.slice(0,5).map(e=>`
+      <div style="font-size:.79rem;padding:3px 0;border-bottom:1px solid var(--border)">
+        ${esc(e.name)} · ${e.sets}×${e.reps}${e.weight?' @ '+e.weight+'kg':''}
+      </div>`).join('') : '<p class="muted-text">No workout planned</p>';
+  // Goals
+  const goals=LS.get('goals',[]);
+  document.getElementById('dash-goals').innerHTML=goals.length ?
+    goals.slice(0,3).map(g=>{
+      const pct=Math.round((g.current/g.target)*100);
+      return `<div style="margin-bottom:8px">
+        <div style="font-size:.79rem;display:flex;justify-content:space-between;margin-bottom:3px">
+          <span>${esc(g.title)}</span><span style="color:var(--muted)">${pct}%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>`;}).join('') : '<p class="muted-text">No goals yet</p>';
+  // Budget
+  const month=TODAY.slice(0,7);
+  const txs=LS.get('transactions',[]).filter(x=>x.month===month);
+  const inc=txs.filter(x=>x.type==='income').reduce((a,x)=>a+x.amount,0);
+  const exp=txs.filter(x=>x.type==='expense').reduce((a,x)=>a+x.amount,0);
+  const bal=inc-exp;
+  document.getElementById('dash-budget').innerHTML=`
+    <div style="font-size:.82rem;display:grid;gap:5px">
+      <div style="display:flex;justify-content:space-between"><span>Income</span><span class="income-color">$${inc.toFixed(2)}</span></div>
+      <div style="display:flex;justify-content:space-between"><span>Expenses</span><span class="expense-color">$${exp.toFixed(2)}</span></div>
+      <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:5px;font-weight:600">
+        <span>Balance</span><span class="${bal>=0?'balance-color':'expense-color'}">${bal<0?'-':''}$${Math.abs(bal).toFixed(2)}</span>
+      </div>
+    </div>`;
+  // Reminders
+  const reminders=LS.get('reminders',[]).filter(r=>r.date===TODAY);
+  document.getElementById('dash-reminders').innerHTML=reminders.length ?
+    reminders.map(r=>`<div class="reminder-item"><span class="rtime">${r.time}</span><span class="rmsg">${esc(r.msg)}</span></div>`).join('')
+    : '<p class="muted-text">No reminders today</p>';
+}
+
+// ── EXPORT / IMPORT / RESET ───────────────────────────────────────────────
+const DATA_KEYS=['tasks','habits','reminders','notes','transactions','goals','weekplan','meals','workouts','grocery'];
+
+function resetAllData(){
+  if(!confirm('⚠️ Reset everything?\n\nThis will permanently delete ALL your tasks, habits, notes, goals, budget, workouts, meals and grocery items.\n\nTip: Export a backup first if you want to keep your data.\n\nThis cannot be undone.')) return;
+  // Second confirmation — extra safety
+  if(!confirm('Are you absolutely sure? All data will be wiped.')) return;
+  DATA_KEYS.forEach(k=>localStorage.removeItem(k));
+  showToast('🗑 All data cleared — starting fresh!');
+  setTimeout(()=>location.reload(), 1000);
+}
+
+function exportData(){
+  const snapshot={};
+  DATA_KEYS.forEach(k=>{snapshot[k]=LS.get(k,Array.isArray(LS.get(k,[]))?[]:{});});
+  snapshot._exported=new Date().toISOString();
+  snapshot._version=1;
+  const blob=new Blob([JSON.stringify(snapshot,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`busyworker-backup-${TODAY}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ Data exported — check your Downloads folder');
+}
+
+function importData(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      // Validate it looks like our backup
+      const hasKeys=DATA_KEYS.some(k=>k in data);
+      if(!hasKeys) throw new Error('Not a valid Busy Worker OS backup file');
+      // Confirm before overwriting
+      if(!confirm(`Import backup from ${data._exported?new Date(data._exported).toLocaleString():'unknown date'}?\n\nThis will REPLACE all current data. Your existing data will be lost.`)){
+        e.target.value=''; return;
+      }
+      DATA_KEYS.forEach(k=>{ if(k in data) LS.set(k,data[k]); });
+      e.target.value='';
+      showToast('✅ Data imported successfully — reloading…');
+      setTimeout(()=>location.reload(),1200);
+    } catch(err){
+      alert('❌ Import failed: '+err.message);
+      e.target.value='';
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+document.getElementById('workout-date').value=TODAY;
+document.getElementById('budget-month').value=TODAY.slice(0,7);
+refreshDashboard();
+</script>
 </body>
-</html> 
+</html>
